@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+    --color-base: #0000ff;
+}
+@theme {
+    --color-remiu-primary: var(--color-base);
+    /* --color-remiu-secondary: oklch(0.68 0.214 40); */
+    --color-remiu-secondary: var(--color-base);
+}
 
 /* :root {
   --background: #ffffff;

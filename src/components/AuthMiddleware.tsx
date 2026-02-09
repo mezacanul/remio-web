@@ -2,6 +2,7 @@
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
 import Login from "./Login";
+import Layout from "./Layout";
 
 export default function AuthMiddleware({
     children,
@@ -14,5 +15,5 @@ export default function AuthMiddleware({
     if (!token) {
         return <Login />;
     }
-    return <>{children}</>;
+    return <Layout>{children}</Layout>;
 }

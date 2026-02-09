@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "@/src/components/Providers";
 import AuthMiddleware from "@/src/components/AuthMiddleware";
+import SideMenu from "@/src/components/SideMenu";
 
 export const metadata: Metadata = {
-    title: "Remiu - Cuentas claras, amistades largas",
-    description: "Divide tus cuentas facilmente",
+    title: "Remiu App",
+    description: "Divide tus cuentas y consumos facilmente",
 };
 
 export default function RootLayout({
@@ -15,10 +16,15 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`antialiased`}>
+            <body
+                className={`antialiased bg-gray-100 dark:bg-gray-950 position-relative`}
+            >
                 <Providers>
                     <AuthMiddleware>
-                        {children}
+                        <main className="h-full">
+                            {children}
+                        </main>
+                        <SideMenu />
                     </AuthMiddleware>
                 </Providers>
             </body>

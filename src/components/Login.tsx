@@ -54,7 +54,7 @@ export default function Login() {
     };
 
     return (
-        <div className="bg-gray-100 dark:bg-gray-950 flex flex-col items-center justify-center h-screen relative">
+        <div className="flex flex-col items-center justify-center h-screen relative">
             <ToggleTheme />
             <div className="flex flex-col items-center justify-center gap-4 w-[15rem] -mt-20">
                 <Logo size={"lg"} />
@@ -65,11 +65,11 @@ export default function Login() {
                     type="text"
                     placeholder="Número de teléfono"
                     value={form.number}
-                    className="w-full p-2 border border-gray-400 rounded-md text-center bg-white text-black placeholder:text-gray-500"
+                    className="w-full p-2 border border-gray-400 rounded-md text-center bg-white dark:bg-gray-800 text-black dark:text-white placeholder:text-gray-500"
                     onChange={handlePhoneChange}
                 />
                 {isLoading && (
-                    <span className="text-2xl p-2 animate-spin text-purple-700 dark:text-white">
+                    <span className="text-2xl p-2 animate-spin text-remiu-primary dark:text-white">
                         <ImSpinner2 />
                     </span>
                 )}

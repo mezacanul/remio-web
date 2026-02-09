@@ -12,18 +12,27 @@ export default function Logo({
             lg: "text-3xl",
         },
         icon: {
-            sm: "text-lg",
+            sm: "text-base",
             md: "text-xl",
             lg: "text-2xl",
         },
+        gap: {
+            sm: "gap-1",
+            md: "gap-2",
+            lg: "gap-2",
+        },
     };
     return (
-        <div className="flex gap-2 items-center">
-            <span className={`${sizeClass.icon[size]} text-purple-700 dark:text-white`}>
+        <div
+            className={`flex ${sizeClass.gap[size]} items-center`}
+        >
+            <span
+                className={`${sizeClass.icon[size]} text-remiu-secondary`}
+            >
                 <FaMartiniGlassEmpty />
             </span>
             <h1
-                className={`${sizeClass.text[size]} font-bold text-purple-700 dark:text-white`}
+                className={`${sizeClass.text[size]} font-bold text-remiu-primary dark:text-remiu-primary`}
             >
                 REMIU
             </h1>
