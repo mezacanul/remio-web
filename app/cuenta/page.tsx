@@ -9,19 +9,16 @@ import { FaEllipsisV } from "react-icons/fa";
 import { FaArrowLeft, FaShare } from "react-icons/fa6";
 import { MdOutlineIosShare } from "react-icons/md";
 import { useRouter } from "next/navigation";
+import Header from "@/src/components/Common/Header";
 
 export default function CuentaPage() {
     const navigation = useRouter();
     return (
         <div className="flex flex-col gap-3">
-            <div className="flex gap-2 items-center">
-                <span onClick={() => navigation.push("/")}>
-                    <FaArrowLeft size={20} />
-                </span>
-                <h1 className="text-2xl font-bold">
-                    Nueva Cuenta
-                </h1>
-            </div>
+            <Header
+                title="Nueva Cuenta"
+                onBack={() => navigation.push("/")}
+            />
             <NameAndActions />
             <div className="h-[45vh] overflow-y-auto my-4">
                 <InvitadosList />
