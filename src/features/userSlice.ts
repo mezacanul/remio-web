@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    token: null,
-    number: null,
+    token: "1234567890",
+    number: 9993000000,
     name: null,
 };
 
