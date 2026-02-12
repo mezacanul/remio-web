@@ -2,22 +2,23 @@ type Consumo = {
     id: string;
     nombre: string;
     cantidad: number;
-    precio: number;
+    precio: string;
 };
 
 type Invitado = {
     id: string;
     nombre: string;
     consumos: Consumo[];
+    joined?: boolean;
 };
 
 type Cuenta = {
-    id: string;
+    id?: string | null;
     nombre: string;
     invitados: Invitado[];
-    codigo: string;
-    createdAt: string;
-    updatedAt: string;
+    codigo?: string | null;
+    createdAt?: string;
+    updatedAt?: string;
 };
 
 export type { Consumo, Invitado, Cuenta };

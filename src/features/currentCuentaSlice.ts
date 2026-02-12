@@ -2,7 +2,9 @@ import {
     createSlice,
     PayloadAction,
 } from "@reduxjs/toolkit";
-import { Cuenta } from "@/src/types";
+import { Cuenta, Invitado } from "@/src/types";
+import { v4 as uuidv4 } from "uuid";
+import { format } from "date-fns";
 
 const initialState: Cuenta = {
     id: "",
@@ -17,20 +19,56 @@ const currentCuentaSlice = createSlice({
     name: "currentCuenta",
     initialState,
     reducers: {
+        resetCurrentCuenta: (state) => {
+            return initialState;
+        },
         setCurrentCuenta: (
-            state: Cuenta,
+            state: Cuenta | null,
             action: PayloadAction<Cuenta>
         ) => {
-            state.id = action.payload.id;
-            state.nombre = action.payload.nombre;
-            state.invitados = action.payload.invitados;
-            state.codigo = action.payload.codigo;
-            state.createdAt = action.payload.createdAt;
-            state.updatedAt = action.payload.updatedAt;
+            return action.payload;
+        },
+        initializeCurrentCuenta: (state) => {
+            const now = format(new Date(), "dd/MM/yyyy");
+            // const uuid = uuidv4();
+            // const codigo = uuid.slice(0, 6).toUpperCase();
+            return {
+                id: null,
+                nombre: "",
+                invitados: [],
+                codigo: null,
+                createdAt: now,
+                updatedAt: now,
+            };
+        },
+        addInvitadoToCurrentCuenta: (
+            state: Cuenta | null,
+            action: PayloadAction<Invitado>
+        ) => {
+            if (state) {
+                state.invitados.push(action.payload);
+            }
+        },
+        updateInvitadoInCurrentCuenta: (
+            state: Cuenta,
+            action: PayloadAction<Invitado>
+        ) => {
+            const updatedInvitado = action.payload;
+            state.invitados = state.invitados.map(
+                (invitado) =>
+                    invitado.id === updatedInvitado.id
+                        ? updatedInvitado
+                        : invitado
+            );
         },
     },
 });
 
-export const { setCurrentCuenta } =
-    currentCuentaSlice.actions;
+export const {
+    initializeCurrentCuenta,
+    setCurrentCuenta,
+    addInvitadoToCurrentCuenta,
+    resetCurrentCuenta,
+    updateInvitadoInCurrentCuenta,
+} = currentCuentaSlice.actions;
 export default currentCuentaSlice.reducer;

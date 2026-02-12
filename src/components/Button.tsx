@@ -16,7 +16,7 @@ export default function Button({
     py?: string;
 }) {
     const widthClass = w ? `w-${w}` : "w-full";
-    const paddingYClass = py ? `py-[${py}]` : "py-3";
+    const paddingYClass = py ? `py-${py}` : "py-3";
     const textSizeClass = textSize
         ? `text-[${textSize}]`
         : "text-base";
@@ -24,7 +24,7 @@ export default function Button({
     return (
         <button
             onClick={onClick}
-            className={`${widthClass} ${paddingYClass} ${textSizeClass} disabled:opacity-50 p-2 rounded-md text-center bg-remiu-primary text-white font-bold flex items-center justify-center`}
+            className={`px-2 ${widthClass} ${paddingYClass} ${textSizeClass} disabled:opacity-50 rounded-md text-center bg-remiu-primary text-white font-bold flex items-center justify-center`}
             disabled={disabled}
         >
             {icon && (

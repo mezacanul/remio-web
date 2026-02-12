@@ -13,7 +13,7 @@ export default function ConsumoPage() {
     return (
         <div>
             <Header
-                title={`Consumo`}
+                title={`Invitado`}
                 onBack={() => navigation.push("/cuenta")}
             />
             <div className="flex items-center gap-2 mt-2">

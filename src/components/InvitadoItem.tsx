@@ -5,14 +5,16 @@ import {
 
 export default function InvitadoItem({
     nombre,
-    monto,
+    // monto,
     joined,
     onClick,
+    total,
 }: {
     nombre: string;
-    monto: string;
+    // monto: string;
     joined: boolean;
     onClick?: () => void;
+    total: number;
 }) {
     return (
         <div
@@ -36,7 +38,9 @@ export default function InvitadoItem({
                 </div>
             </div>
             <span className="text-remiu-primary font-bold">
-                {monto}
+                {/* {monto} */}
+                {/* {"$3,500.00"} */}
+                {`$${total.toFixed(2)}`}
             </span>
         </div>
     );

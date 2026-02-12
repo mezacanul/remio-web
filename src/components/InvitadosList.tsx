@@ -1,76 +1,77 @@
 import InvitadoItem from "./InvitadoItem";
 import { useRouter } from "next/navigation";
+import { Invitado } from "@/src/types";
+import { useState } from "react";
+import Button from "./Button";
 
-export default function InvitadosList() {
+type MappedInvitado = {
+    id: string;
+    nombre: string;
+    joined?: boolean;
+    total: number;
+};
+
+export default function InvitadosList({
+    invitados,
+    onAddInvitado,
+}: {
+    invitados: MappedInvitado[];
+    onAddInvitado: () => void;
+}) {
     const navigation = useRouter();
     return (
-        <div className="flex flex-col gap-2">
-            {invitados.map((invitado) => (
-                <InvitadoItem
-                    key={invitado.nombre}
-                    nombre={invitado.nombre}
-                    monto={invitado.monto}
-                    joined={invitado.joined}
-                    onClick={() => {
-                        navigation.push(
-                            `/consumo/${invitado.nombre}`
-                        );
-                    }}
+        <div>
+            <div className="flex justify-between items-end mb-4">
+                <p className="text-xl font-bold">
+                    {"Invitados"}
+                </p>
+                <Button
+                    title="+"
+                    w="10"
+                    py="1"
+                    onClick={onAddInvitado}
                 />
-            ))}
+            </div>
+            <div className="flex flex-col gap-2">
+                {invitados &&
+                    invitados.map((invitado) => (
+                        <InvitadoItem
+                            key={invitado.id}
+                            nombre={invitado.nombre}
+                            // monto={invitado.monto}
+                            joined={
+                                invitado.joined ?? false
+                            }
+                            total={invitado.total}
+                            onClick={() => {
+                                navigation.push(
+                                    `/invitado?id=${invitado.id}`
+                                );
+                            }}
+                        />
+                    ))}
+            </div>
         </div>
     );
 }
 
-const invitados = [
+const invitadosData = [
     {
+        id: "1",
         nombre: "Jose Meza",
-        monto: "$3,500.00",
+        consumos: [],
         joined: false,
     },
     {
+        id: "2",
         nombre: "Juan Perez",
-        monto: "$12,450.00",
+        consumos: [],
         joined: true,
     },
     {
+        id: "3",
         nombre: "Maria Lopez",
-        monto: "$100.00",
         joined: false,
-    },
-    {
-        nombre: "Pedro Garcia",
-        monto: "$100.00",
-        joined: true,
-    },
-    {
-        nombre: "Ana Rodriguez",
-        monto: "$100.00",
-        joined: false,
-    },
-    {
-        nombre: "Luis Martinez",
-        monto: "$100.00",
-        joined: true,
-    },
-    {
-        nombre: "Carlos Ramirez",
-        monto: "$100.00",
-        joined: true,
-    },
-    {
-        nombre: "Laura Hernandez",
-        monto: "$100.00",
-        joined: false,
-    },
-    {
-        nombre: "Diego Gonzalez",
-        monto: "$100.00",
-        joined: false,
-    },
-    {
-        nombre: "Sofia Perez",
-        monto: "$100.00",
-        joined: false,
+        consumos: [],
     },
 ];
