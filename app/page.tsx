@@ -1,7 +1,7 @@
 "use client";
-import Button from "@/src/components/Button";
-import DropdownMenu from "@/src/components/DropdownMenu";
-import DropdownMenuItem from "@/src/components/DropdownMenuItem";
+import Button from "@/src/components/Common/Button";
+import DropdownMenu from "@/src/components/Common/DropdownMenu";
+import DropdownMenuItem from "@/src/components/Common/DropdownMenuItem";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaPlus } from "react-icons/fa";

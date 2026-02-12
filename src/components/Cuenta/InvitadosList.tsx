@@ -2,7 +2,7 @@ import InvitadoItem from "./InvitadoItem";
 import { useRouter } from "next/navigation";
 import { Invitado } from "@/src/types";
 import { useState } from "react";
-import Button from "./Button";
+import Button from "../Common/Button";
 
 type MappedInvitado = {
     id: string;

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Logo from "./Logo";
-import Button from "./Button";
+import Button from "./Common/Button";
 import { initUser } from "@/src/features/userSlice";
 import { useDispatch } from "react-redux";
 import { FiSun } from "react-icons/fi";

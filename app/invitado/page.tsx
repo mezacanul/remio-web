@@ -1,10 +1,10 @@
 "use client";
 
-import Button from "@/src/components/Button";
+import Button from "@/src/components/Common/Button";
 import Header from "@/src/components/Common/Header";
-import ConsumoList from "@/src/components/Consumo/List";
-import DropdownMenu from "@/src/components/DropdownMenu";
-import DropdownMenuItem from "@/src/components/DropdownMenuItem";
+import ConsumoList from "@/src/components/Consumo/ConsumoList";
+import DropdownMenu from "@/src/components/Common/DropdownMenu";
+import DropdownMenuItem from "@/src/components/Common/DropdownMenuItem";
 import { updateCuenta } from "@/src/features/cuentasSlice";
 import {
     addInvitadoToCurrentCuenta,
@@ -241,11 +241,6 @@ function ConsumoForm({
     ) => {
         const newValue = e.target.value;
         const processedValue = newValue.trim();
-        // const numberValue = parseFloat(newValue);
-        // const isNumber = !isNaN(numberValue);
-        // Remove leading zeros from newValue
-        // const nextChar = newValue[newValue.length - 1];
-        // const isNumber = !isNaN(Number(newValue));
         if (
             Number(processedValue) ||
             processedValue === ""
@@ -291,7 +286,7 @@ function ConsumoForm({
                     <input
                         type="number"
                         placeholder="0"
-                        className={`${classes.input} w-full`}
+                        className={`${classes.input} w-full text-xl`}
                         value={form.precio}
                         onChange={(e) =>
                             handlePrecioChange(e)

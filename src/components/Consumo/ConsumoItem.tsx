@@ -1,5 +1,6 @@
 import { Consumo } from "@/src/types";
 import { useMemo } from "react";
+import { FaChevronRight } from "react-icons/fa";
 
 export default function ConsumoItem({
     consumo,
@@ -13,8 +14,13 @@ export default function ConsumoItem({
     }, [consumo]);
     return (
         <div className="bg-white border border-remiu-primary shadow-sm flex justify-between items-center p-3 rounded-md cursor-pointer">
-            <p>{consumo.nombre}</p>
-            <p className="font-bold">{`$${total.toFixed(2)}`}</p>
+            <div className="flex items-center gap-2">
+                <FaChevronRight />
+                <p>{consumo.nombre}</p>
+            </div>
+            <p className="font-bold">{`$${total.toFixed(
+                2
+            )}`}</p>
         </div>
     );
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import Button from "@/src/components/Button";
-import DropdownMenu from "@/src/components/DropdownMenu";
-import DropdownMenuItem from "@/src/components/DropdownMenuItem";
-import InvitadosList from "@/src/components/InvitadosList";
+import Button from "@/src/components/Common/Button";
+import DropdownMenu from "@/src/components/Common/DropdownMenu";
+import DropdownMenuItem from "@/src/components/Common/DropdownMenuItem";
+import InvitadosList from "@/src/components/Cuenta/InvitadosList";
 import {
     useEffect,
     useMemo,

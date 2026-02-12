@@ -1,6 +1,6 @@
 import { Consumo } from "@/src/types";
-import Button from "../Button";
-import ConsumoItem from "./Item";
+import Button from "../Common/Button";
+import ConsumoItem from "./ConsumoItem";
 
 export default function ConsumoList({
     consumos,
