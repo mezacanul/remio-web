@@ -1,5 +1,5 @@
 import { Consumo } from "@/src/types";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createNewConsumo } from "@/src/utils";
 import { IoClose } from "react-icons/io5";
 import Button from "../Common/Button";
@@ -8,21 +8,26 @@ import ButtonSmall from "./ButtonSmall";
 type ConsumoFormProps = {
     onClose: () => void;
     onAddConsumo: (consumo: Consumo) => void;
+    onUpdateConsumo: (consumo: Consumo) => void;
+    currentConsumo: Consumo | null;
+    setCurrentConsumo: (consumo: Consumo | null) => void;
 };
 
 export default function ConsumoForm({
     onClose,
     onAddConsumo,
-}: {
-    onClose: () => void;
-    onAddConsumo: (consumo: Consumo) => void;
-}) {
+    onUpdateConsumo,
+    currentConsumo,
+    setCurrentConsumo,
+}: ConsumoFormProps) {
     const defaultForm = {
         nombre: "",
         precio: "",
         cantidad: 1,
     };
-    const [form, setForm] = useState(defaultForm);
+    const [form, setForm] = useState(
+        currentConsumo ? currentConsumo : defaultForm
+    );
     const total = useMemo(() => {
         const precio = Number(form.precio);
         if (precio !== 0 && form.cantidad !== 0) {
@@ -48,15 +53,18 @@ export default function ConsumoForm({
         });
     };
 
-    function handleAddConsumo() {
-        const newConsumo = createNewConsumo(
-            form.nombre,
-            form.precio,
-            form.cantidad
-        );
-        onAddConsumo(newConsumo);
-        onClose();
-        setForm(defaultForm);
+    function handleSaveConsumo() {
+        if (!currentConsumo) {
+            const newConsumo = createNewConsumo(
+                form.nombre,
+                form.precio,
+                form.cantidad
+            );
+            onAddConsumo(newConsumo);
+        } else {
+            onUpdateConsumo(form);
+        }
+        handleClose();
     }
 
     const handlePrecioChange = (
@@ -76,15 +84,23 @@ export default function ConsumoForm({
             return;
         }
     };
+
+    const handleClose = () => {
+        onClose();
+        setForm(defaultForm);
+        setCurrentConsumo(null);
+    };
     return (
         <div className="w-[100%] border-1 border-gray-300/80 bg-white p-4 pb-5 shadow-lg rounded-xl my-3">
             <div className="pb-4 flex justify-between items-center">
                 <p className="text-center font-bold">
-                    {"Nuevo Consumo:"}
+                    {currentConsumo
+                        ? "Editar Consumo:"
+                        : "Nuevo Consumo:"}
                 </p>
                 <button
                     className="text-gray-500"
-                    onClick={onClose}
+                    onClick={handleClose}
                 >
                     <IoClose size={20} />
                 </button>
@@ -156,8 +172,8 @@ export default function ConsumoForm({
                   onClick={onClose}
               /> */}
                 <Button
-                    title="Agregar"
-                    onClick={handleAddConsumo}
+                    title="Guardar"
+                    onClick={handleSaveConsumo}
                     disabled={
                         Number(form.precio) === 0 ||
                         form.nombre.trim() === ""

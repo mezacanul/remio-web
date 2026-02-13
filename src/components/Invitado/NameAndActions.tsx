@@ -43,11 +43,11 @@ export default function NameAndActions({
     }, [currentCuenta]);
 
     return (
-        <div className="flex justify-between items-center gap-3">
+        <div className="flex justify-between items-center gap-1">
             <input
                 type="text"
                 placeholder="(sin nombre)"
-                className="w-full text-xl p-2 pl-0 border-b border-gray-400 dark:bg-gray-800 text-black dark:text-white placeholder:text-gray-500"
+                className="w-full text-xl p-2 ps-0 pb-1 border-b border-gray-400 dark:bg-gray-800 text-black dark:text-white placeholder:text-gray-500"
                 // autoFocus
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
@@ -59,7 +59,7 @@ export default function NameAndActions({
                 trigger={
                     <FaEllipsisV
                         size={24}
-                        style={{ marginRight: "-8px" }}
+                        style={{ marginRight: "-6px", marginTop: "4px" }}
                     />
                 }
             >

@@ -16,6 +16,7 @@ import {
     resetCurrentCuenta,
     setCurrentCuenta,
 } from "@/src/features/currentCuentaSlice";
+import { MdOutlineDinnerDining } from "react-icons/md";
 
 export default function Home() {
     const dispatch = useDispatch();
@@ -107,7 +108,8 @@ function CuentaItem({ cuenta }: { cuenta: Cuenta }) {
             className="bg-white border-2 border-remiu-primary shadow-sm flex items-center justify-between p-2 rounded-md cursor-pointer"
         >
             <div className="flex items-center gap-2">
-                <TbFileInvoice size={30} />
+                {/* <TbFileInvoice size={30} /> */}
+                <MdOutlineDinnerDining size={33} />
                 {/* <ImSpoonKnife size={28} /> */}
                 {/* <GiForkKnifeSpoon size={30} /> */}
                 <div className="flex flex-col gap-1">

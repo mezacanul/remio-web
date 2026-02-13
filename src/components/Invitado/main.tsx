@@ -26,7 +26,7 @@ export default function InvitadoMain() {
     const [currentInvitado, setCurrentInvitado] =
         useState<Invitado | null>(null);
     const navigation = useRouter();
-    const [isAdding, setIsAdding] = useState(false);
+    const [isFormOpen, setIsFormOpen] = useState(false);
     const [nombre, setNombre] = useState("");
     const [consumos, setConsumos] = useState<Consumo[]>([]);
     const currentCuenta = useSelector(
@@ -36,6 +36,9 @@ export default function InvitadoMain() {
     const total = useMemo(() => {
         return getInvitadoTotal(consumos);
     }, [consumos]);
+    const [currentConsumo, setCurrentConsumo] =
+        useState<Consumo | null>(null);
+
     const mtClass = total > 0 ? "" : "mt-5";
 
     useEffect(() => {
@@ -97,6 +100,24 @@ export default function InvitadoMain() {
         setConsumos([...consumos, consumo]);
     }
 
+    function onUpdateConsumo(consumo: Consumo) {
+        setConsumos(
+            consumos.map((c) =>
+                c.id === consumo.id ? consumo : c
+            )
+        );
+    }
+
+    // useEffect(() => {
+    //     const newInvitado = {
+    //         ...(currentInvitado as Invitado),
+    //         consumos: consumos,
+    //     };
+    //     dispatch(
+    //         updateInvitadoInCurrentCuenta(newInvitado)
+    //     );
+    // }, [consumos]);
+
     return (
         <div className="w-full">
             <Header
@@ -106,9 +127,9 @@ export default function InvitadoMain() {
                 }
             />
             <div className="flex items-center gap-2 mt-2 w-full">
-                <span className="">
+                {/* <span className="">
                     <BsPersonCircle size={24} />
-                </span>
+                </span> */}
                 <div className="w-full">
                     <NameAndActions
                         nombre={nombre}
@@ -127,27 +148,35 @@ export default function InvitadoMain() {
             )}
 
             <div className={`${mtClass} w-[100%]`}>
-                {!isAdding && consumos.length == 0 && (
+                {!isFormOpen && consumos.length == 0 && (
                     <div className="flex justify-center">
                         <BotonAgregarConsumo
                             title="Agregar Consumo +"
                             onClick={() =>
-                                setIsAdding(true)
+                                setIsFormOpen(true)
                             }
                         />
                     </div>
                 )}
-                {isAdding && (
+                {isFormOpen && (
                     <ConsumoForm
-                        onClose={() => setIsAdding(false)}
+                        onClose={() => setIsFormOpen(false)}
                         onAddConsumo={onAddConsumo}
+                        onUpdateConsumo={onUpdateConsumo}
+                        currentConsumo={currentConsumo}
+                        setCurrentConsumo={
+                            setCurrentConsumo
+                        }
                     />
                 )}
-                {!isAdding && consumos.length > 0 && (
+                {!isFormOpen && consumos.length > 0 && (
                     <div className="mt-2 mb-5 w-[100%]">
                         <ConsumoList
                             consumos={consumos}
-                            setIsAdding={setIsAdding}
+                            setIsFormOpen={setIsFormOpen}
+                            setCurrentConsumo={
+                                setCurrentConsumo
+                            }
                         />
                     </div>
                 )}

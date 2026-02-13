@@ -4,11 +4,17 @@ import ConsumoItem from "./ConsumoItem";
 
 export default function ConsumoList({
     consumos,
-    setIsAdding,
+    setIsFormOpen,
+    setCurrentConsumo,
 }: {
     consumos: Consumo[];
-    setIsAdding: (isAdding: boolean) => void;
+    setIsFormOpen: (isFormOpen: boolean) => void;
+    setCurrentConsumo: (consumo: Consumo) => void;
 }) {
+    function handleItemClick(consumo: Consumo) {
+        setIsFormOpen(true);
+        setCurrentConsumo(consumo);
+    }
     return (
         <div>
             <div className="flex justify-between items-center">
@@ -19,7 +25,7 @@ export default function ConsumoList({
                     title="+"
                     w="10"
                     py="1"
-                    onClick={() => setIsAdding(true)}
+                    onClick={() => setIsFormOpen(true)}
                 />
             </div>
             <div className="flex flex-col gap-2 py-4">
@@ -27,6 +33,7 @@ export default function ConsumoList({
                     <ConsumoItem
                         key={consumo.id}
                         consumo={consumo}
+                        onClick={handleItemClick}
                     />
                 ))}
             </div>

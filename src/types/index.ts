@@ -1,5 +1,5 @@
 type Consumo = {
-    id: string;
+    id?: string;
     nombre: string;
     cantidad: number;
     precio: string;
