@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import Header from "@/src/components/Common/Header";
 import {
     addCuenta,
+    deleteCuenta,
     updateCuenta,
 } from "@/src/features/cuentasSlice";
 import { Cuenta, Invitado } from "@/src/types";
@@ -132,6 +133,11 @@ export default function CuentaPage() {
         }
     }
 
+    function onDeleteCuenta() {
+        dispatch(deleteCuenta(currentCuenta.id as string));
+        navigation.push("/");
+    }
+
     return (
         <div className="flex flex-col gap-3">
             <Header
@@ -152,6 +158,7 @@ export default function CuentaPage() {
                     handleSaveAndNavigate
                 }
                 nameRef={nameRef}
+                onDeleteCuenta={onDeleteCuenta}
             />
 
             {/* <Button
@@ -192,15 +199,7 @@ export default function CuentaPage() {
     );
 }
 
-function NameAndActions({
-    // currentCuenta,
-    nameRef,
-    nombre,
-    setNombre,
-    handleSaveAndNavigate,
-    createdAt,
-}: {
-    // currentCuenta: Cuenta;
+type NameAndActionsProps = {
     nameRef: React.RefObject<HTMLInputElement | null>;
     nombre: string;
     setNombre: (nombre: string) => void;
@@ -209,22 +208,17 @@ function NameAndActions({
         route?: string
     ) => void;
     createdAt: string | undefined;
-}) {
+    onDeleteCuenta: () => void;
+};
+function NameAndActions({
+    nameRef,
+    nombre,
+    setNombre,
+    handleSaveAndNavigate,
+    createdAt,
+    onDeleteCuenta,
+}: NameAndActionsProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const navigation = useRouter();
-    const dispatch = useDispatch();
-
-    // useEffect(() => {
-    //     console.log(currentCuenta);
-    // }, [currentCuenta]);
-
-    const handleAgregarInvitado = () => {
-        navigation.push("/invitado");
-    };
-
-    const onSave = () => {
-        handleSaveAndNavigate();
-    };
 
     return (
         <div className="flex justify-between items-start gap-1">
@@ -260,21 +254,13 @@ function NameAndActions({
                     />
                 }
             >
-                {/* <DropdownMenuItem
-                    title="Guardar"
-                    onClick={() => handleGuardar(true)}
-                /> */}
-                {/* <DropdownMenuItem
-                    title="Agregar Invitado"
-                    onClick={handleAgregarInvitado}
-                /> */}
                 <DropdownMenuItem
                     title="Codigo de invitación"
                     onClick={() => {}}
                 />
                 <DropdownMenuItem
                     title="Eliminar"
-                    onClick={() => {}}
+                    onClick={onDeleteCuenta}
                 />
             </DropdownMenu>
         </div>

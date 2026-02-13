@@ -59,7 +59,8 @@ export default function Login() {
             <div className="flex flex-col items-center justify-center gap-4 w-[15rem] -mt-20">
                 <Logo size={"lg"} />
                 <p className="text-sm italic mb-3 dark:text-gray-300">
-                    {"¡Cuentas claras, Amistades largas!"}
+                    {/* {"¡Cuentas claras, Amistades largas!"} */}
+                    {"¡Divide cuentas facilmente!"}
                 </p>
                 <input
                     type="text"

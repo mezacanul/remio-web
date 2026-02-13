@@ -1,4 +1,4 @@
-import { Consumo, Cuenta, Invitado } from "../types";
+import { Consumo, Cuenta, Invitado, User } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { format } from "date-fns";
 
@@ -30,6 +30,18 @@ function saveCuentasToLocalStorage(
         "remiu-cuentas",
         JSON.stringify(cuentas)
     );
+}
+
+function saveUserToLocalStorage(user: User): void {
+    localStorage.setItem(
+        "remiu-user",
+        JSON.stringify(user)
+    );
+}
+
+function getUserFromLocalStorage(): User | null {
+    const user = localStorage.getItem("remiu-user");
+    return user ? JSON.parse(user) : null;
 }
 
 function getCuentasFromLocalStorage(): Cuenta[] | null {
@@ -89,4 +101,6 @@ export {
     createNewInvitado,
     createNewConsumo,
     getInvitadoTotal,
+    saveUserToLocalStorage,
+    getUserFromLocalStorage,
 };

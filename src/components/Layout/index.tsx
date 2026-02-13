@@ -10,22 +10,24 @@ export default function Layout({
 }: {
     children: React.ReactNode;
 }) {
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const dispatch = useDispatch();
+    
     useEffect(() => {
-        setIsLoading(true);
+        // setIsLoading(true);
         const cuentas = getCuentasFromLocalStorage();
         if (cuentas) {
             dispatch(setCuentas(cuentas));
         }
         setIsLoading(false);
     }, []);
+
     return (
         <div className="flex flex-col px-6 h-screen">
             <Header />
             {isLoading && (
-                <div className="flex justify-center items-center h-full">
-                    <ImSpinner2 size={24} />
+                <div className="flex justify-center items-center h-full animate-spin -mt-20">
+                    <ImSpinner2 size={40} />
                 </div>
             )}
             {!isLoading && (

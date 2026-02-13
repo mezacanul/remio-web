@@ -21,4 +21,10 @@ type Cuenta = {
     updatedAt?: string;
 };
 
-export type { Consumo, Invitado, Cuenta };
+type User = {
+    number: number | null;
+    token: string | null;
+    name: string | null;
+};
+
+export type { Consumo, Invitado, Cuenta, User };

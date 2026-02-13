@@ -46,10 +46,24 @@ const cuentasSlice = createSlice({
             saveCuentasToLocalStorage(newArray);
             return newArray;
         },
+        deleteCuenta: (
+            state: Cuenta[],
+            action: PayloadAction<string>
+        ) => {
+            const newArray = state.filter(
+                (cuenta) => cuenta.id != action.payload
+            );
+            saveCuentasToLocalStorage(newArray);
+            return newArray;
+        },
     },
 });
 
-export const { setCuentas, addCuenta, updateCuenta } =
-    cuentasSlice.actions;
+export const {
+    setCuentas,
+    addCuenta,
+    updateCuenta,
+    deleteCuenta,
+} = cuentasSlice.actions;
 
 export default cuentasSlice.reducer;
