@@ -108,15 +108,11 @@ export default function InvitadoMain() {
         );
     }
 
-    // useEffect(() => {
-    //     const newInvitado = {
-    //         ...(currentInvitado as Invitado),
-    //         consumos: consumos,
-    //     };
-    //     dispatch(
-    //         updateInvitadoInCurrentCuenta(newInvitado)
-    //     );
-    // }, [consumos]);
+    function handleDeleteConsumo(consumo: Consumo) {
+        setConsumos(
+            consumos.filter((c) => c.id !== consumo.id)
+        );
+    }
 
     return (
         <div className="w-full">
@@ -167,9 +163,12 @@ export default function InvitadoMain() {
                         setCurrentConsumo={
                             setCurrentConsumo
                         }
+                        handleDeleteConsumo={
+                            handleDeleteConsumo
+                        }
                     />
                 )}
-                {!isFormOpen && consumos.length > 0 && (
+                {consumos.length > 0 && (
                     <div className="mt-2 mb-5 w-[100%]">
                         <ConsumoList
                             consumos={consumos}
@@ -177,6 +176,7 @@ export default function InvitadoMain() {
                             setCurrentConsumo={
                                 setCurrentConsumo
                             }
+                            disableAddConsumo={isFormOpen}
                         />
                     </div>
                 )}

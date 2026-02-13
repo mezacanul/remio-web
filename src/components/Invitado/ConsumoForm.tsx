@@ -11,6 +11,7 @@ type ConsumoFormProps = {
     onUpdateConsumo: (consumo: Consumo) => void;
     currentConsumo: Consumo | null;
     setCurrentConsumo: (consumo: Consumo | null) => void;
+    handleDeleteConsumo: (consumo: Consumo) => void;
 };
 
 export default function ConsumoForm({
@@ -19,6 +20,7 @@ export default function ConsumoForm({
     onUpdateConsumo,
     currentConsumo,
     setCurrentConsumo,
+    handleDeleteConsumo,
 }: ConsumoFormProps) {
     const defaultForm = {
         nombre: "",
@@ -67,6 +69,11 @@ export default function ConsumoForm({
         handleClose();
     }
 
+    function onDeleteConsumo() {
+        handleDeleteConsumo(currentConsumo as Consumo);
+        handleClose();
+    }
+
     const handlePrecioChange = (
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
@@ -90,6 +97,7 @@ export default function ConsumoForm({
         setForm(defaultForm);
         setCurrentConsumo(null);
     };
+
     return (
         <div className="w-[100%] border-1 border-gray-300/80 bg-white p-4 pb-5 shadow-lg rounded-xl my-3">
             <div className="pb-4 flex justify-between items-center">
@@ -167,10 +175,17 @@ export default function ConsumoForm({
             </div>
 
             <div className="flex justify-between gap-3">
-                {/* <Button
-                  title="Cancelar"
-                  onClick={onClose}
-              /> */}
+                {currentConsumo && (
+                    <Button
+                        title="Eliminar"
+                        bgColor="bg-gray-400"
+                        onClick={onDeleteConsumo}
+                        disabled={
+                            Number(form.precio) === 0 ||
+                            form.nombre.trim() === ""
+                        }
+                    />
+                )}
                 <Button
                     title="Guardar"
                     onClick={handleSaveConsumo}
