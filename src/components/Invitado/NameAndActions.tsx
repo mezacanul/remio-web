@@ -5,7 +5,10 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { Invitado } from "@/src/types";
 import { v4 as uuidv4 } from "uuid";
-import { addInvitadoToCurrentCuenta, setCurrentCuenta } from "@/src/features/currentCuentaSlice";
+import {
+    addInvitadoToCurrentCuenta,
+    setCurrentCuenta,
+} from "@/src/features/currentCuentaSlice";
 import DropdownMenu from "../Common/DropdownMenu";
 import DropdownMenuItem from "../Common/DropdownMenuItem";
 import { FaEllipsisV } from "react-icons/fa";
@@ -13,11 +16,13 @@ import { FaEllipsisV } from "react-icons/fa";
 type NameAndActionsProps = {
     nombre: string;
     setNombre: (nombre: string) => void;
+    onDeleteInvitado: () => void;
 };
 
 export default function NameAndActions({
     nombre,
     setNombre,
+    onDeleteInvitado,
 }: NameAndActionsProps) {
     const [isOpen, setIsOpen] = useState(false);
     const currentCuenta = useSelector(
@@ -25,18 +30,6 @@ export default function NameAndActions({
     );
     const navigation = useRouter();
     const dispatch = useDispatch();
-
-    const handleAgregarInvitado = () => {
-        const newInvitado: Invitado = {
-            id: uuidv4(),
-            nombre: nombre,
-            consumos: [],
-            joined: false,
-        };
-        dispatch(addInvitadoToCurrentCuenta(newInvitado));
-        setIsOpen(false);
-        navigation.push("/cuenta");
-    };
 
     useEffect(() => {
         dispatch(setCurrentCuenta(currentCuenta));
@@ -59,13 +52,16 @@ export default function NameAndActions({
                 trigger={
                     <FaEllipsisV
                         size={24}
-                        style={{ marginRight: "-6px", marginTop: "4px" }}
+                        style={{
+                            marginRight: "-6px",
+                            marginTop: "4px",
+                        }}
                     />
                 }
             >
                 <DropdownMenuItem
                     title="Eliminar"
-                    onClick={() => {}}
+                    onClick={onDeleteInvitado}
                 />
             </DropdownMenu>
         </div>

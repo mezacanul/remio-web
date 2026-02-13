@@ -61,6 +61,14 @@ const currentCuentaSlice = createSlice({
                         : invitado
             );
         },
+        deleteInvitadoFromCurrentCuenta: (
+            state: Cuenta,
+            action: PayloadAction<string>
+        ) => {
+            state.invitados = state.invitados.filter(
+                (invitado) => invitado.id != action.payload
+            );
+        },
     },
 });
 
@@ -70,5 +78,6 @@ export const {
     addInvitadoToCurrentCuenta,
     resetCurrentCuenta,
     updateInvitadoInCurrentCuenta,
+    deleteInvitadoFromCurrentCuenta,
 } = currentCuentaSlice.actions;
 export default currentCuentaSlice.reducer;

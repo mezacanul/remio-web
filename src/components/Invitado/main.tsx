@@ -10,6 +10,7 @@ import { getInvitadoTotal } from "@/src/utils";
 import { createNewInvitado, getById } from "@/src/utils";
 import {
     addInvitadoToCurrentCuenta,
+    deleteInvitadoFromCurrentCuenta,
     updateInvitadoInCurrentCuenta,
 } from "@/src/features/currentCuentaSlice";
 import { updateCuenta } from "@/src/features/cuentasSlice";
@@ -114,6 +115,15 @@ export default function InvitadoMain() {
         );
     }
 
+    function onDeleteInvitado() {
+        dispatch(
+            deleteInvitadoFromCurrentCuenta(
+                currentInvitado?.id as string
+            )
+        );
+        navigation.push("/cuenta");
+    }
+
     return (
         <div className="w-full">
             <Header
@@ -130,6 +140,7 @@ export default function InvitadoMain() {
                     <NameAndActions
                         nombre={nombre}
                         setNombre={setNombre}
+                        onDeleteInvitado={onDeleteInvitado}
                     />
                 </div>
             </div>

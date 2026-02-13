@@ -117,7 +117,7 @@ export default function ConsumoForm({
                 <input
                     type="text"
                     placeholder="Nombre*"
-                    className={`${classes.input} text-left`}
+                    className={`${classes.input} text-left text-lg`}
                     value={form.nombre}
                     onChange={(e) =>
                         setForm({
@@ -178,7 +178,7 @@ export default function ConsumoForm({
                 {currentConsumo && (
                     <Button
                         title="Eliminar"
-                        bgColor="bg-gray-400"
+                        bgColor="bg-red-500"
                         onClick={onDeleteConsumo}
                         disabled={
                             Number(form.precio) === 0 ||
