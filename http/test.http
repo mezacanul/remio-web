@@ -1,0 +1,44 @@
+GET http://localhost:5000/api/cuentas?userId=user123
+GET http://localhost:5000/api/cuentas?userId=user456
+
+GET http://localhost:5000/api/cuentas/699bc43e62f5b23377a30db5
+
+POST http://localhost:5000/api/cuentas
+Content-Type: application/json
+{
+     "nombre": "Cocteleria",
+     "userId": "user456",
+     "invitados": [],
+     "sharedConsumos": []
+}
+
+DELETE http://localhost:5000/api/cuentas/699bc40e62f5b23377a30dae
+
+PUT http://localhost:5000/api/cuentas/699bc42962f5b23377a30db2
+{
+    "id": "699bc42962f5b23377a30db2",
+    "nombre": "Cena familiar",
+    "userId": "user123",
+    "codigo": "9HZ4WH",
+    "invitados": [
+      {
+        "nombre": "Juan",
+        "consumo": [
+          {
+            "nombre": "Chela",
+            "cantidad": 4,
+            "precio": 35
+          },
+          {
+            "nombre": "Alitas",
+            "cantidad": 2,
+            "precio": 120.5
+          }
+        ]
+      }
+    ],
+    "sharedConsumos": [],
+    "createdAt": "2026-02-23T03:06:17.708+00:00",
+    "updatedAt": "2026-02-23T03:06:17.708+00:00",
+    "__v": 0
+}

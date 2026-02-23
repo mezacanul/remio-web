@@ -41,7 +41,7 @@ export default function ConsumoForm({
     const classes = {
         input: "w-[50%] p-2 border-[1.5] border-remiu-primary rounded-md text-center bg-white dark:bg-gray-800 text-black dark:text-white placeholder:text-gray-500",
         inputNumber:
-            "w-full p-2 border-b-2 border-gray-400 text-center text-black dark:text-white placeholder:text-gray-500 text-2xl",
+            "w-full p-2 border-b-2 border-gray-400 text-center text-black dark:text-white placeholder:text-gray-500 text-xl",
         totalAlign: total ? "text-left" : "text-center",
     };
 
@@ -144,11 +144,11 @@ export default function ConsumoForm({
 
             <div className="flex justify-between gap-3">
                 <div className="flex flex-col items-center py-3 mb-2 w-[50%]">
-                    <p className="w-full text-left text-sm text-gray-600">
+                    <p className="w-full text-center text-sm text-gray-600">
                         {"Total:"}
                     </p>
                     <p
-                        className={`text-2xl font-bold text-remiu-primary ${classes.totalAlign} w-full`}
+                        className={`text-3xl font-bold text-remiu-primary text-center w-full`}
                     >
                         {total ? `$${total}` : "--"}
                     </p>
@@ -178,7 +178,7 @@ export default function ConsumoForm({
                 {currentConsumo && (
                     <Button
                         title="Eliminar"
-                        bgColor="bg-red-500"
+                        bgColor="bg-gray-500"
                         onClick={onDeleteConsumo}
                         disabled={
                             Number(form.precio) === 0 ||

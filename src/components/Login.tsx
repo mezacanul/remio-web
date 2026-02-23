@@ -58,9 +58,9 @@ export default function Login() {
             <ToggleTheme />
             <div className="flex flex-col items-center justify-center gap-4 w-[15rem] -mt-20">
                 <Logo size={"lg"} />
-                <p className="text-sm italic mb-3 dark:text-gray-300">
+                <p className="text-sm italic mb-1 dark:text-gray-300">
                     {/* {"¡Cuentas claras, Amistades largas!"} */}
-                    {"¡Divide cuentas facilmente!"}
+                    {"¡Divide tus cuentas facilmente!"}
                 </p>
                 <input
                     type="text"
