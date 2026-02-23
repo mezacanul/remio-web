@@ -1,11 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { saveUserToLocalStorage } from "../utils";
-import { User } from "../types";
+import { User } from "@/types/base";
+// import { User } from "../types";
 
 const initialState: User = {
+    _id: "user123",
+    nombres: null,
+    apellidos: null,
+    email: null,
+    profilePicture: null,
     token: null,
-    number: null,
-    name: null,
 };
 
 const userSlice = createSlice({
@@ -13,11 +17,7 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         initUser: (state, action) => {
-            const user = {
-                number: action.payload.number,
-                token: action.payload.token,
-                name: "",
-            };
+            const user = action.payload as User;
             saveUserToLocalStorage(user);
             return user;
         },

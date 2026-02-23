@@ -21,9 +21,11 @@ export async function GET(request: Request) {
         // 2. Get all cuentas
         const cuentas = await CuentaModel.find({
             userId,
-        }).sort({
-            createdAt: -1,
-        });
+        })
+            .select("nombre createdAt")
+            .sort({
+                createdAt: -1,
+            });
         // 3. Return the response
         return NextResponse.json(cuentas, {
             status: 200,

@@ -18,9 +18,12 @@ interface Consumo {
 }
 
 interface User {
+    _id: string;
+    nombres: string | null;
+    apellidos: string | null;
     email: string | null;
-    name: string | null;
     profilePicture: string | null;
+    token: string | null;
 }
 
 export type { Consumo, Invitado, Cuenta, User };

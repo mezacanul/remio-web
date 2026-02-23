@@ -6,18 +6,26 @@ import { initUser } from "@/src/features/userSlice";
 import { useDispatch } from "react-redux";
 import { FiSun } from "react-icons/fi";
 import { ImSpinner2 } from "react-icons/im";
+import { FaGoogle } from "react-icons/fa";
+import Image from "next/image";
+import LoadingSpinner from "./Common/LoadingSpinner";
 
 export default function Login() {
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
-    const [form, setForm] = useState({
-        number: "",
-    });
+    // const [form, setForm] = useState({
+    //     number: "",
+    // });
 
     const handleLogin = () => {
         setIsLoading(true);
         const send = {
-            number: form.number,
+            _id: "user123",
+            nombres: "Eduardo",
+            apellidos: "Meza",
+            email: "eduardo@gmail.com",
+            profilePicture:
+                "https://picsum.photos/600/600.jpg",
             token: window.crypto.randomUUID(),
         };
         console.log(send);
@@ -28,23 +36,23 @@ export default function Login() {
         }, 1500);
     };
 
-    const handlePhoneChange = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        const nextChar =
-            e.target.value[e.target.value.length - 1];
-        const nextIsNumber = !isNaN(Number(nextChar));
-        const value = e.target.value;
-        if (
-            phoneValidation(nextIsNumber, value) ||
-            value === ""
-        ) {
-            setForm({
-                ...form,
-                number: value,
-            });
-        }
-    };
+    // const handlePhoneChange = (
+    //     e: React.ChangeEvent<HTMLInputElement>
+    // ) => {
+    //     const nextChar =
+    //         e.target.value[e.target.value.length - 1];
+    //     const nextIsNumber = !isNaN(Number(nextChar));
+    //     const value = e.target.value;
+    //     if (
+    //         phoneValidation(nextIsNumber, value) ||
+    //         value === ""
+    //     ) {
+    //         setForm({
+    //             ...form,
+    //             number: value,
+    //         });
+    //     }
+    // };
 
     const phoneValidation = (
         nextIsNumber: boolean,
@@ -62,26 +70,65 @@ export default function Login() {
                     {/* {"¡Cuentas claras, Amistades largas!"} */}
                     {"¡Divide tus cuentas facilmente!"}
                 </p>
-                <input
+                {/* <input
                     type="text"
                     placeholder="Número de teléfono"
                     value={form.number}
                     className="w-full p-2 border border-gray-400 rounded-md text-center bg-white dark:bg-gray-800 text-black dark:text-white placeholder:text-gray-500"
                     onChange={handlePhoneChange}
-                />
-                {isLoading && (
-                    <span className="text-2xl p-2 animate-spin text-remiu-primary dark:text-white">
-                        <ImSpinner2 />
-                    </span>
-                )}
+                /> */}
                 {!isLoading && (
+                    <OAuthOptions
+                        handleLogin={handleLogin}
+                    />
+                )}
+                {isLoading && <LoadingSpinner />}
+                {/* {!isLoading && (
                     <Button
                         disabled={form.number.length !== 10}
                         title="Iniciar"
                         onClick={handleLogin}
                     />
-                )}
+                )} */}
             </div>
+        </div>
+    );
+}
+
+function OAuthOptions({
+    handleLogin,
+}: {
+    handleLogin: () => void;
+}) {
+    const options = [
+        {
+            name: "Google",
+            icon: "/google.icon.png",
+        },
+        {
+            name: "Facebook",
+            icon: "/facebook.icon.png",
+        },
+    ];
+    return (
+        <div className="flex flex-col gap-3 w-full">
+            {options.map((option, idx) => (
+                <button
+                    key={idx}
+                    className="flex items-center justify-center gap-2 bg-white text-black px-4 py-2 rounded-md shadow-sm w-full"
+                    onClick={handleLogin}
+                >
+                    <Image
+                        src={option.icon}
+                        alt={option.name}
+                        width={25}
+                        height={25}
+                    />
+                    <span className="text-sm font-semibold">
+                        {"Iniciar con " + option.name}
+                    </span>
+                </button>
+            ))}
         </div>
     );
 }

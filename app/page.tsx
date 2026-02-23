@@ -2,35 +2,48 @@
 import Button from "@/src/components/Common/Button";
 import DropdownMenu from "@/src/components/Common/DropdownMenu";
 import DropdownMenuItem from "@/src/components/Common/DropdownMenuItem";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
 import { Cuenta } from "@/src/types";
 import { FaChevronRight } from "react-icons/fa6";
-import { TbFileInvoice } from "react-icons/tb";
-import { ImSpoonKnife } from "react-icons/im";
-import { GiForkKnifeSpoon } from "react-icons/gi";
-import {
-    resetCurrentCuenta,
-    setCurrentCuenta,
-} from "@/src/features/currentCuentaSlice";
 import { MdOutlineDinnerDining } from "react-icons/md";
+import LoadingSpinner from "@/src/components/Common/LoadingSpinner";
+import { useGetCuentasQuery } from "@/src/store/api/cuentasApi";
+import { TbFileInvoice, TbInvoice } from "react-icons/tb";
+import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
+import { formatDate } from "@/src/utils";
+import { ImSpoonKnife } from "react-icons/im";
+
+type CuentaListItem = Pick<
+    Cuenta,
+    "nombre" | "createdAt"
+> & {
+    _id: string;
+};
 
 export default function Home() {
-    const dispatch = useDispatch();
-    const cuentas = useSelector(
-        (state: RootState) => state.cuentas
+    const userId = useSelector(
+        (state: RootState) => state.user._id
     );
+    const {
+        data: cuentasData,
+        isLoading,
+        isError,
+    } = useGetCuentasQuery(userId);
+    const cuentas = useMemo(() => {
+        if (cuentasData) {
+            return cuentasData?.map((cuenta) => {
+                return {
+                    ...cuenta,
+                    createdAt: formatDate(cuenta.createdAt),
+                };
+            });
+        }
+        return null;
+    }, [cuentasData]);
 
-    useEffect(() => {
-        dispatch(resetCurrentCuenta());
-    }, []);
-
-    useEffect(() => {
-        console.log(cuentas);
-    }, [cuentas]);
     const [isOpen, setIsOpen] = useState(false);
     const navigation = useRouter();
 
@@ -41,13 +54,11 @@ export default function Home() {
                     {"Mis cuentas"}
                 </h1>
                 <DropdownMenu
-                    // title="Agregar +"
                     trigger={
                         <Button
                             title="Agregar +"
                             onClick={() => {}}
                             w="20"
-                            // icon={<FaPlus size={16} />}
                         />
                     }
                     isOpen={isOpen}
@@ -69,54 +80,83 @@ export default function Home() {
                     />
                 </DropdownMenu>
             </div>
-            {cuentas.length === 0 && (
-                <div className="h-full flex justify-center items-center">
-                    <p className="w-[60%] -mt-10 text-center">
-                        {"Aqui apareceran tus cuentas 🥂"}
-                    </p>
+
+            {isLoading && (
+                <div className="h-[40%] flex justify-center items-center">
+                    <LoadingSpinner size="lg" />
                 </div>
             )}
-            {cuentas.length > 0 && (
-                <CuentasList cuentas={cuentas} />
-            )}
+
+            {!isLoading &&
+                cuentas &&
+                cuentas.length === 0 && (
+                    <div className="h-full flex justify-center items-center">
+                        <p className="w-[60%] -mt-10 text-center">
+                            {
+                                "Aqui apareceran tus cuentas 🥂"
+                            }
+                        </p>
+                    </div>
+                )}
+            {!isLoading &&
+                cuentas &&
+                cuentas.length > 0 && (
+                    <CuentasList
+                        cuentas={
+                            cuentas as CuentaListItem[]
+                        }
+                    />
+                )}
         </div>
     );
 }
 
-function CuentasList({ cuentas }: { cuentas: Cuenta[] }) {
+function CuentasList({
+    cuentas,
+}: {
+    cuentas: CuentaListItem[];
+}) {
     return (
         <div className="flex flex-col gap-2 py-4">
             {cuentas.map((cuenta, index) => (
-                <CuentaItem key={index} cuenta={cuenta} />
+                <CuentaItem
+                    key={index}
+                    idx={index}
+                    cuenta={cuenta}
+                />
             ))}
         </div>
     );
 }
 
-function CuentaItem({ cuenta }: { cuenta: Cuenta }) {
+function CuentaItem({
+    idx,
+    cuenta,
+}: {
+    idx: number;
+    cuenta: CuentaListItem;
+}) {
     const dispatch = useDispatch();
     const navigation = useRouter();
 
-    const handleClick = () => {
-        console.log(cuenta);
-        dispatch(setCurrentCuenta(cuenta));
-        navigation.push("/cuenta");
-    };
+    // const handleClick = () => {
+    //     console.log(cuenta);
+    //     dispatch(setCurrentCuenta(cuenta));
+    //     navigation.push("/cuenta");
+    // };
     return (
         <div
-            onClick={handleClick}
+            // onClick={handleClick}
             className="bg-white border-2 border-remiu-primary shadow-sm flex items-center justify-between p-2 rounded-md cursor-pointer"
         >
-            <div className="flex items-center gap-2">
-                {/* <TbFileInvoice size={30} /> */}
-                <MdOutlineDinnerDining size={33} />
-                {/* <ImSpoonKnife size={28} /> */}
-                {/* <GiForkKnifeSpoon size={30} /> */}
+            <div className="flex items-center gap-4">
+                {idx % 2 === 0 ? (
+                    <LiaFileInvoiceDollarSolid size={36} />
+                ) : (
+                    <MdOutlineDinnerDining size={38} />
+                )}
                 <div className="flex flex-col gap-1">
-                    <h1>
-                        {cuenta.nombre}
-                        {}
-                    </h1>
+                    <h1>{cuenta.nombre}</h1>
                     <p className="text-xs text-gray-500">
                         {cuenta.createdAt}
                     </p>

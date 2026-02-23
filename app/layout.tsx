@@ -3,6 +3,7 @@ import "./globals.css";
 import Providers from "@/src/components/Providers";
 import AuthMiddleware from "@/src/components/AuthMiddleware";
 import SideMenu from "@/src/components/SideMenu";
+import { ReduxProvider } from "@/src/store/provider";
 
 export const metadata: Metadata = {
     title: "Remiu App",
@@ -19,14 +20,16 @@ export default function RootLayout({
             <body
                 className={`antialiased bg-gray-100 dark:bg-gray-950 position-relative`}
             >
-                <Providers>
+                {/* <Providers> */}
+                <ReduxProvider>
                     <AuthMiddleware>
                         <main className="h-full">
                             {children}
                         </main>
                         <SideMenu />
                     </AuthMiddleware>
-                </Providers>
+                </ReduxProvider>
+                {/* </Providers> */}
             </body>
         </html>
     );

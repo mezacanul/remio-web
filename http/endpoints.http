@@ -1,8 +1,11 @@
+# Get all cuentas by userId
 GET http://localhost:5000/api/cuentas?userId=user123
 GET http://localhost:5000/api/cuentas?userId=user456
 
+# Get cuenta by id
 GET http://localhost:5000/api/cuentas/699bc43e62f5b23377a30db5
 
+# Create cuenta
 POST http://localhost:5000/api/cuentas
 Content-Type: application/json
 {
@@ -12,8 +15,10 @@ Content-Type: application/json
      "sharedConsumos": []
 }
 
+# Delete cuenta
 DELETE http://localhost:5000/api/cuentas/699bc40e62f5b23377a30dae
 
+# Update cuenta
 PUT http://localhost:5000/api/cuentas/699bc42962f5b23377a30db2
 {
     "id": "699bc42962f5b23377a30db2",

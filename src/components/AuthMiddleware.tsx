@@ -21,6 +21,7 @@ export default function AuthMiddleware({
 
     useEffect(() => {
         const storedUser = getUserFromLocalStorage();
+        console.log(storedUser);
         if (storedUser) {
             dispatch(setUser(storedUser));
         }

@@ -1,9 +1,19 @@
-import { Consumo, Cuenta, Invitado, User } from "../types";
+import {
+    Consumo,
+    Cuenta,
+    Invitado,
+    // User
+} from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { format } from "date-fns";
+import { User } from "@/types/base";
 
 function getById(array: any[], id: string) {
     return array.find((item) => item.id === id);
+}
+
+function formatDate(createdAt: string) {
+    return format(new Date(createdAt), "dd/MM/yyyy");
 }
 
 function createNewCuenta(
@@ -33,6 +43,7 @@ function saveCuentasToLocalStorage(
 }
 
 function saveUserToLocalStorage(user: User): void {
+    // console.log("saving user to localStorage", user);
     localStorage.setItem(
         "remiu-user",
         JSON.stringify(user)
@@ -103,4 +114,5 @@ export {
     getInvitadoTotal,
     saveUserToLocalStorage,
     getUserFromLocalStorage,
+    formatDate,
 };
