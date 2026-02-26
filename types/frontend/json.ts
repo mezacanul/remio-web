@@ -8,9 +8,9 @@ interface CuentaJSON
     compartidos: ConsumoJSON[] | Consumo[];
 }
 interface InvitadoJSON
-    extends Omit<Invitado, "consumos">,
+    extends Omit<Invitado, "consumo">,
         DocumentProps {
-    consumos: ConsumoJSON[] | Consumo[];
+    consumo: ConsumoJSON[] | Consumo[];
 }
 interface ConsumoJSON extends Consumo, DocumentProps {}
 interface UserJSON extends User, DocumentProps {}

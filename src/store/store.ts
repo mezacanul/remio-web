@@ -4,6 +4,8 @@ import sidemenuReducer from "@/src/features/sidemenuSlice";
 import cuentasReducer from "@/src/features/cuentasSlice";
 import currentCuentaReducer from "@/src/features/currentCuentaSlice";
 import { cuentasApi } from "./api/cuentasApi";
+import { currentCuentaApi } from "./api/currentCuentaApi";
+import currentCuentaIDReducer from "@/src/features/currentCuentaID";
 
 const store = configureStore({
     reducer: {
@@ -11,11 +13,15 @@ const store = configureStore({
         sidemenu: sidemenuReducer,
         cuentas: cuentasReducer,
         currentCuenta: currentCuentaReducer,
+        currentCuentaID: currentCuentaIDReducer,
         [cuentasApi.reducerPath]: cuentasApi.reducer,
+        [currentCuentaApi.reducerPath]:
+            currentCuentaApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
-            cuentasApi.middleware
+            cuentasApi.middleware,
+            currentCuentaApi.middleware
         ),
 });
 

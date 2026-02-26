@@ -34,131 +34,179 @@ import {
     createNewCuenta,
     getInvitadoTotal,
 } from "@/src/utils";
+import { useGetCurrentCuentaQuery } from "@/src/store/api/currentCuentaApi";
+import LoadingSpinner from "@/src/components/Common/LoadingSpinner";
+import { InvitadoJSON } from "@/types/frontend/json";
 
 export default function CuentaPage() {
-    const currentCuenta = useSelector(
-        (state: RootState) => state.currentCuenta
+    const currentCuentaID = useSelector(
+        (state: RootState) => state.currentCuentaID.id
     );
-    const cuentasCount = useSelector(
-        (state: RootState) => state.cuentas.length
-    );
-    const navigation = useRouter();
-    const dispatch = useDispatch();
-    const nameRef = useRef<HTMLInputElement>(null);
-    const [nombre, setNombre] = useState(
-        currentCuenta?.nombre || ""
-    );
-    const [invitados, setInvitados] =
-        // useState<Invitado[]>(invitadosData);
-        useState<Invitado[]>(
-            currentCuenta?.invitados || []
-        );
+
+    const {
+        data: currentCuentaData,
+        isLoading,
+        isError,
+    } = useGetCurrentCuentaQuery(currentCuentaID as string);
+
+    useEffect(() => {
+        if (currentCuentaData) {
+            console.log(
+                "currentCuentaData",
+                currentCuentaData
+            );
+        }
+    }, [currentCuentaData]);
+    // const currentCuenta = useSelector(
+    //     (state: RootState) => state.currentCuenta
+    // );
+    // const cuentasCount = useSelector(
+    //     (state: RootState) => state.cuentas.length
+    // );
+    // const navigation = useRouter();
+    // const dispatch = useDispatch();
+    // const nameRef = useRef<HTMLInputElement>(null);
+    const [nombre, setNombre] = useState("");
+    // const [invitados, setInvitados] =
+    //     // useState<Invitado[]>(invitadosData);
+    //     useState<Invitado[]>(
+    //         currentCuenta?.invitados || []
+    //     );
 
     const invitadosMapped = useMemo(() => {
-        if (invitados.length > 0) {
+        if (currentCuentaData) {
+            setNombre(currentCuentaData.nombre);
+        }
+        if (currentCuentaData?.invitados.length > 0) {
+            console.log(
+                "currentCuentaData?.invitados",
+                currentCuentaData?.invitados
+            );
+
+            const { invitados } = currentCuentaData;
             let newInvitados = [];
-            newInvitados = invitados.map((invitado) => {
-                return {
-                    id: invitado.id,
-                    nombre: invitado.nombre,
-                    joined: invitado.joined,
-                    total: getInvitadoTotal(
-                        invitado.consumos
-                    ),
-                };
-            });
+            newInvitados = invitados.map(
+                (invitado: any) => {
+                    return {
+                        ...invitado,
+                        total: getInvitadoTotal(
+                            invitado.consumo
+                        ),
+                    };
+                }
+            );
+            console.log("newInvitados", newInvitados);
             return newInvitados;
         }
         return [];
-    }, [invitados]);
+    }, [currentCuentaData]);
 
     const totalCalculado = useMemo(() => {
-        return invitadosMapped.reduce((acc, invitado) => {
-            return acc + invitado.total;
-        }, 0);
+        if (invitadosMapped) {
+            return invitadosMapped.reduce(
+                (acc: number, invitado: any) => {
+                    return acc + invitado.total;
+                },
+                0
+            );
+        }
+        return 0;
     }, [invitadosMapped]);
 
-    useEffect(() => {
-        if (currentCuenta.id == "") {
-            console.log("initializeCurrentCuenta");
-            dispatch(initializeCurrentCuenta());
-        } else {
-            console.log("currentCuenta", currentCuenta);
-        }
-    }, [currentCuenta]);
+    // useEffect(() => {
+    //     if (currentCuenta.id == "") {
+    //         console.log("initializeCurrentCuenta");
+    //         dispatch(initializeCurrentCuenta());
+    //     } else {
+    //         console.log("currentCuenta", currentCuenta);
+    //     }
+    // }, [currentCuenta]);
 
-    useEffect(() => {
-        // if (currentCuenta.invitados.length > 0) {
-        setInvitados(currentCuenta.invitados);
-        // }
-    }, [currentCuenta.invitados]);
+    // useEffect(() => {
+    //     // if (currentCuenta.invitados.length > 0) {
+    //     setInvitados(currentCuenta.invitados);
+    //     // }
+    // }, [currentCuenta.invitados]);
 
-    function handleSaveAndNavigate(
-        navigate: boolean = false,
-        route: string | null = null
-    ) {
-        console.log("handleGuardar", nombre, invitados);
-        const trimmedNombre = nombre.trim();
-        const hasName = trimmedNombre != "";
+    // function handleSaveAndNavigate(
+    //     navigate: boolean = false,
+    //     route: string | null = null
+    // ) {
+    //     console.log("handleGuardar", nombre, invitados);
+    //     const trimmedNombre = nombre.trim();
+    //     const hasName = trimmedNombre != "";
 
-        if (hasName || invitados.length > 0) {
-            let newCuenta: Cuenta;
-            if (currentCuenta.id) {
-                newCuenta = {
-                    ...currentCuenta,
-                    nombre: trimmedNombre,
-                    invitados: invitados,
-                };
-                console.log("updateCuenta", newCuenta);
-                dispatch(updateCuenta(newCuenta));
-            } else {
-                newCuenta = createNewCuenta(
-                    nombre,
-                    invitados
-                );
-                newCuenta.nombre = hasName
-                    ? trimmedNombre
-                    : `Nueva Cuenta${
-                          cuentasCount != 0
-                              ? ` (${cuentasCount})`
-                              : ""
-                      }`;
-                console.log("addCuenta", newCuenta);
-                dispatch(addCuenta(newCuenta));
-            }
-            dispatch(setCurrentCuenta(newCuenta));
-        }
-        if (navigate && route) {
-            navigation.push(route);
-        }
-    }
+    //     if (hasName || invitados.length > 0) {
+    //         let newCuenta: Cuenta;
+    //         if (currentCuenta.id) {
+    //             newCuenta = {
+    //                 ...currentCuenta,
+    //                 nombre: trimmedNombre,
+    //                 invitados: invitados,
+    //             };
+    //             console.log("updateCuenta", newCuenta);
+    //             dispatch(updateCuenta(newCuenta));
+    //         } else {
+    //             newCuenta = createNewCuenta(
+    //                 nombre,
+    //                 invitados
+    //             );
+    //             newCuenta.nombre = hasName
+    //                 ? trimmedNombre
+    //                 : `Nueva Cuenta${
+    //                       cuentasCount != 0
+    //                           ? ` (${cuentasCount})`
+    //                           : ""
+    //                   }`;
+    //             console.log("addCuenta", newCuenta);
+    //             dispatch(addCuenta(newCuenta));
+    //         }
+    //         dispatch(setCurrentCuenta(newCuenta));
+    //     }
+    //     if (navigate && route) {
+    //         navigation.push(route);
+    //     }
+    // }
 
-    function onDeleteCuenta() {
-        dispatch(deleteCuenta(currentCuenta.id as string));
-        navigation.push("/");
-    }
+    // function onDeleteCuenta() {
+    //     dispatch(deleteCuenta(currentCuenta.id as string));
+    //     navigation.push("/");
+    // }
+
+    if (isLoading)
+        return (
+            <div className="flex justify-center items-center h-full">
+                <LoadingSpinner size="lg" />
+            </div>
+        );
 
     return (
         <div className="flex flex-col gap-3">
             <Header
                 title={`${
-                    !currentCuenta.id ? "Nueva " : ""
+                    !currentCuentaData?._id ? "Nueva " : ""
                 } Cuenta`}
                 onBack={() => {
-                    handleSaveAndNavigate(true, "/");
+                    // handleSaveAndNavigate(true, "/");
+                    return;
                 }}
             />
             <NameAndActions
                 createdAt={
-                    currentCuenta?.createdAt || undefined
+                    currentCuentaData?.createdAt ||
+                    undefined
                 }
                 nombre={nombre}
                 setNombre={setNombre}
                 handleSaveAndNavigate={
-                    handleSaveAndNavigate
+                    () => {}
+                    // handleSaveAndNavigate
                 }
-                nameRef={nameRef}
-                onDeleteCuenta={onDeleteCuenta}
+                // nameRef={nameRef}
+                onDeleteCuenta={
+                    () => {}
+                    // onDeleteCuenta
+                }
             />
 
             {/* <Button
@@ -172,25 +220,30 @@ export default function CuentaPage() {
                         <div className="w-[60%]">
                             <Button
                                 title="Agregar Invitado +"
-                                onClick={() =>
-                                    handleSaveAndNavigate(
-                                        true,
-                                        "/invitado"
-                                    )
-                                }
+                                onClick={() => {}}
+                                // onClick={() =>
+                                //     handleSaveAndNavigate(
+                                //         true,
+                                //         "/invitado"
+                                //     )
+                                // }
                             />
                         </div>
                     </div>
                 )}
+                {/* {currentCuentaData?.invitados.length > 0 && ( */}
                 {invitadosMapped.length > 0 && (
                     <InvitadosList
                         invitados={invitadosMapped}
-                        onAddInvitado={() =>
-                            handleSaveAndNavigate(
-                                true,
-                                "/invitado"
-                            )
-                        }
+                        // invitados={
+                        //     currentCuentaData?.invitados
+                        // }
+                        // onAddInvitado={() =>
+                        //     handleSaveAndNavigate(
+                        //         true,
+                        //         "/invitado"
+                        //     )
+                        // }
                     />
                 )}
             </div>
@@ -200,7 +253,7 @@ export default function CuentaPage() {
 }
 
 type NameAndActionsProps = {
-    nameRef: React.RefObject<HTMLInputElement | null>;
+    nameRef?: React.RefObject<HTMLInputElement | null>;
     nombre: string;
     setNombre: (nombre: string) => void;
     handleSaveAndNavigate: (
@@ -210,6 +263,7 @@ type NameAndActionsProps = {
     createdAt: string | undefined;
     onDeleteCuenta: () => void;
 };
+
 function NameAndActions({
     nameRef,
     nombre,
@@ -282,7 +336,7 @@ function Summary({
                 />
             </div>
             <div className="flex flex-col gap-2 mt-2">
-                <div className="flex flex-col justify-between items-center gap-1">
+                <div className="flex flex-col items-end justify-between items-center gap-1">
                     <span className="font-bold">Total</span>
                     <span className="font-bold text-2xl text-remiu-primary">
                         {/* {"$100.00"} */}

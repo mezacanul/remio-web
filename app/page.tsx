@@ -15,6 +15,7 @@ import { TbFileInvoice, TbInvoice } from "react-icons/tb";
 import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
 import { formatDate } from "@/src/utils";
 import { ImSpoonKnife } from "react-icons/im";
+import { setCurrentCuentaID } from "@/src/features/currentCuentaID";
 
 type CuentaListItem = Pick<
     Cuenta,
@@ -32,6 +33,7 @@ export default function Home() {
         isLoading,
         isError,
     } = useGetCuentasQuery(userId);
+
     const cuentas = useMemo(() => {
         if (cuentasData) {
             return cuentasData?.map((cuenta) => {
@@ -44,41 +46,13 @@ export default function Home() {
         return null;
     }, [cuentasData]);
 
-    const [isOpen, setIsOpen] = useState(false);
-    const navigation = useRouter();
-
     return (
         <div className="flex flex-col rounded-md h-[60%]">
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">
                     {"Mis cuentas"}
                 </h1>
-                <DropdownMenu
-                    trigger={
-                        <Button
-                            title="Agregar +"
-                            onClick={() => {}}
-                            w="20"
-                        />
-                    }
-                    isOpen={isOpen}
-                    setIsOpen={setIsOpen}
-                >
-                    <DropdownMenuItem
-                        title="Nueva Cuenta"
-                        onClick={() => {
-                            setIsOpen(false);
-                            navigation.push("/cuenta");
-                        }}
-                    />
-                    <DropdownMenuItem
-                        title="Consumo Personal"
-                        onClick={() => {
-                            setIsOpen(false);
-                            navigation.push("/consumo");
-                        }}
-                    />
-                </DropdownMenu>
+                <AddNewDropdown />
             </div>
 
             {isLoading && (
@@ -87,27 +61,53 @@ export default function Home() {
                 </div>
             )}
 
-            {!isLoading &&
-                cuentas &&
-                cuentas.length === 0 && (
-                    <div className="h-full flex justify-center items-center">
-                        <p className="w-[60%] -mt-10 text-center">
-                            {
-                                "Aqui apareceran tus cuentas 🥂"
-                            }
-                        </p>
-                    </div>
-                )}
-            {!isLoading &&
-                cuentas &&
-                cuentas.length > 0 && (
-                    <CuentasList
-                        cuentas={
-                            cuentas as CuentaListItem[]
-                        }
-                    />
-                )}
+            {cuentas && cuentas.length === 0 && (
+                <div className="h-full flex justify-center items-center">
+                    <p className="w-[60%] -mt-10 text-center">
+                        {"Aqui apareceran tus cuentas 🥂"}
+                    </p>
+                </div>
+            )}
+            {cuentas && cuentas.length > 0 && (
+                <CuentasList
+                    cuentas={cuentas as CuentaListItem[]}
+                />
+            )}
         </div>
+    );
+}
+
+function AddNewDropdown() {
+    const [isOpen, setIsOpen] = useState(false);
+    const navigation = useRouter();
+
+    return (
+        <DropdownMenu
+            trigger={
+                <Button
+                    title="Agregar +"
+                    onClick={() => {}}
+                    w="20"
+                />
+            }
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+        >
+            <DropdownMenuItem
+                title="Nueva Cuenta"
+                onClick={() => {
+                    setIsOpen(false);
+                    navigation.push("/cuenta");
+                }}
+            />
+            <DropdownMenuItem
+                title="Consumo Personal"
+                onClick={() => {
+                    setIsOpen(false);
+                    navigation.push("/consumo");
+                }}
+            />
+        </DropdownMenu>
     );
 }
 
@@ -139,14 +139,15 @@ function CuentaItem({
     const dispatch = useDispatch();
     const navigation = useRouter();
 
-    // const handleClick = () => {
-    //     console.log(cuenta);
-    //     dispatch(setCurrentCuenta(cuenta));
-    //     navigation.push("/cuenta");
-    // };
+    const handleClick = () => {
+        console.log(cuenta);
+        // dispatch(setCurrentCuenta(cuenta));
+        dispatch(setCurrentCuentaID(cuenta._id));
+        navigation.push("/cuenta");
+    };
     return (
         <div
-            // onClick={handleClick}
+            onClick={handleClick}
             className="bg-white border-2 border-remiu-primary shadow-sm flex items-center justify-between p-2 rounded-md cursor-pointer"
         >
             <div className="flex items-center gap-4">

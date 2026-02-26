@@ -40,6 +40,26 @@ PUT http://localhost:5000/api/cuentas/699bc42962f5b23377a30db2
             "precio": 120.5
           }
         ]
+      },
+      {
+        "nombre": "Carlos",
+        "consumo": [
+          {
+            "nombre": "Copa Ron",
+            "cantidad": 2,
+            "precio": 87.50
+          },
+          {
+            "nombre": "Boneless",
+            "cantidad": 2,
+            "precio": 189.50
+          },
+          {
+            "nombre": "Extras ranch",
+            "cantidad": 2,
+            "precio": 15
+          }
+        ]
       }
     ],
     "sharedConsumos": [],

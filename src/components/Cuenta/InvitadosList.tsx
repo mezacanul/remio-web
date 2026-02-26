@@ -5,19 +5,22 @@ import { useState } from "react";
 import Button from "../Common/Button";
 
 type MappedInvitado = {
-    id: string;
+    // id: string;
+    _id: string;
     nombre: string;
     joined?: boolean;
     total: number;
 };
 
+interface InvitadosListProps {
+    invitados: MappedInvitado[];
+    // onAddInvitado: () => void;
+}
+
 export default function InvitadosList({
     invitados,
-    onAddInvitado,
-}: {
-    invitados: MappedInvitado[];
-    onAddInvitado: () => void;
-}) {
+}: // onAddInvitado,
+InvitadosListProps) {
     const navigation = useRouter();
     return (
         <div>
@@ -25,18 +28,19 @@ export default function InvitadosList({
                 <p className="text-xl font-bold">
                     {"Invitados"}
                 </p>
-                <Button
+                {/* <Button
                     title="+"
                     w="10"
                     py="1"
                     onClick={onAddInvitado}
-                />
+                /> */}
             </div>
             <div className="flex flex-col gap-2">
                 {invitados &&
                     invitados.map((invitado) => (
                         <InvitadoItem
-                            key={invitado.id}
+                            // key={invitado.id}
+                            key={invitado._id}
                             nombre={invitado.nombre}
                             // monto={invitado.monto}
                             joined={
@@ -45,7 +49,7 @@ export default function InvitadosList({
                             total={invitado.total}
                             onClick={() => {
                                 navigation.push(
-                                    `/invitado?id=${invitado.id}`
+                                    `/invitado?id=${invitado._id}`
                                 );
                             }}
                         />

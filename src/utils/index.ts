@@ -95,8 +95,8 @@ function createNewConsumo(
     };
 }
 
-function getInvitadoTotal(consumos: Consumo[]): number {
-    return consumos.reduce((acc, consumo) => {
+function getInvitadoTotal(consumo: Consumo[]): number {
+    return consumo.reduce((acc, consumo) => {
         return (
             acc +
             parseFloat(consumo.precio) * consumo.cantidad

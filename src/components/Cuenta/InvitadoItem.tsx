@@ -3,19 +3,21 @@ import {
     BsPersonCircle,
 } from "react-icons/bs";
 
+interface InvitadoItemProps {
+    nombre: string;
+    // monto: string;
+    joined: boolean;
+    onClick?: () => void;
+    total: number;
+}
+
 export default function InvitadoItem({
     nombre,
     // monto,
     joined,
     onClick,
     total,
-}: {
-    nombre: string;
-    // monto: string;
-    joined: boolean;
-    onClick?: () => void;
-    total: number;
-}) {
+}: InvitadoItemProps) {
     return (
         <div
             onClick={onClick}
@@ -32,10 +34,12 @@ export default function InvitadoItem({
                     )}
                 </span>
                 <div className="flex items-end gap-2 h-full">
-                    <span className="text-lg">{nombre}</span>
-                    <span className="text-gray-600 text-remiu-primary text-sm">
-                        {joined ? " (se unió)" : ""}
+                    <span className="text-lg">
+                        {nombre}
                     </span>
+                    {/* <span className="text-gray-600 text-remiu-primary text-sm">
+                        {joined ? " (se unió)" : ""}
+                    </span> */}
                 </div>
             </div>
             <span className="text-remiu-primary font-bold">
