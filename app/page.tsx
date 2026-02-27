@@ -1,31 +1,15 @@
 "use client";
-import Button from "@/src/components/Common/Button";
-import DropdownMenu from "@/src/components/Common/DropdownMenu";
-import DropdownMenuItem from "@/src/components/Common/DropdownMenuItem";
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
-import { Cuenta } from "@/src/types";
-import { FaChevronRight } from "react-icons/fa6";
-import { MdOutlineDinnerDining } from "react-icons/md";
 import LoadingSpinner from "@/src/components/Common/LoadingSpinner";
 import { useGetCuentasQuery } from "@/src/store/api/cuentasApi";
-import { TbFileInvoice, TbInvoice } from "react-icons/tb";
-import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
 import { formatDate } from "@/src/utils";
-import { ImSpoonKnife } from "react-icons/im";
-import {
-    resetCurrentCuentaID,
-    setCurrentCuentaID,
-} from "@/src/features/currentCuentaID";
-
-type CuentaListItem = Pick<
-    Cuenta,
-    "nombre" | "createdAt"
-> & {
-    _id: string;
-};
+import { resetCurrentCuentaID } from "@/src/features/currentCuentaID";
+import AddNewDropdown from "@/src/components/Home/AddNewDropdown";
+import CuentasList from "@/src/components/Home/CuentasList";
+import { CuentaListItem } from "@/types/main";
+import EmptyNotice from "@/src/components/Home/EmptyNotice";
 
 export default function Home() {
     const dispatch = useDispatch();
@@ -73,110 +57,13 @@ export default function Home() {
             </div>
 
             {cuentas && cuentas.length === 0 && (
-                <div className="h-full flex justify-center items-center">
-                    <p className="w-[60%] -mt-10 text-center">
-                        {"Aqui apareceran tus cuentas 🥂"}
-                    </p>
-                </div>
+                <EmptyNotice />
             )}
             {cuentas && cuentas.length > 0 && (
                 <CuentasList
                     cuentas={cuentas as CuentaListItem[]}
                 />
             )}
-        </div>
-    );
-}
-
-function AddNewDropdown() {
-    const [isOpen, setIsOpen] = useState(false);
-    const navigation = useRouter();
-
-    return (
-        <DropdownMenu
-            trigger={
-                <Button
-                    title="Agregar +"
-                    onClick={() => {}}
-                    w="20"
-                />
-            }
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-        >
-            <DropdownMenuItem
-                title="Nueva Cuenta"
-                onClick={() => {
-                    setIsOpen(false);
-                    navigation.push("/cuenta");
-                }}
-            />
-            <DropdownMenuItem
-                title="Consumo Personal"
-                onClick={() => {
-                    setIsOpen(false);
-                    navigation.push("/consumo");
-                }}
-            />
-        </DropdownMenu>
-    );
-}
-
-function CuentasList({
-    cuentas,
-}: {
-    cuentas: CuentaListItem[];
-}) {
-    return (
-        <div className="flex flex-col gap-2 py-4">
-            {cuentas.map((cuenta, index) => (
-                <CuentaItem
-                    key={index}
-                    idx={index}
-                    cuenta={cuenta}
-                />
-            ))}
-        </div>
-    );
-}
-
-function CuentaItem({
-    idx,
-    cuenta,
-}: {
-    idx: number;
-    cuenta: CuentaListItem;
-}) {
-    const dispatch = useDispatch();
-    const navigation = useRouter();
-
-    const handleClick = () => {
-        console.log(cuenta);
-        // dispatch(setCurrentCuenta(cuenta));
-        dispatch(setCurrentCuentaID(cuenta._id));
-        navigation.push("/cuenta");
-    };
-    return (
-        <div
-            onClick={handleClick}
-            className="bg-white border-2 border-remiu-primary shadow-sm flex items-center justify-between p-2 rounded-md cursor-pointer"
-        >
-            <div className="flex items-center gap-4">
-                {idx % 2 === 0 ? (
-                    <LiaFileInvoiceDollarSolid size={36} />
-                ) : (
-                    <MdOutlineDinnerDining size={38} />
-                )}
-                <div className="flex flex-col gap-1">
-                    <h1>{cuenta.nombre}</h1>
-                    <p className="text-xs text-gray-500">
-                        {cuenta.createdAt}
-                    </p>
-                </div>
-            </div>
-            <div>
-                <FaChevronRight size={16} />
-            </div>
         </div>
     );
 }
