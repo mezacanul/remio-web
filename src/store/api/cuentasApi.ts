@@ -1,32 +1,24 @@
-import {
-    createApi,
-    fetchBaseQuery,
-} from "@reduxjs/toolkit/query/react";
+import { baseApi } from "./baseApi";
 
-export const cuentasApi = createApi({
-    reducerPath: "cuentasApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
-    tagTypes: ["Cuentas"],
+export const cuentasApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // GET: Provides the tag
         getCuentas: builder.query<any[], string>({
             query: (userId) => `/cuentas?userId=${userId}`,
             providesTags: ["Cuentas"],
         }),
-
-        // // POST: Invalidates the tag
-        // createCuenta: builder.mutation<any, Partial<any>>({
-        //     query: (newCuenta) => ({
-        //         url: "/cuentas",
-        //         method: "POST",
-        //         body: newCuenta,
-        //     }),
-        //     invalidatesTags: ["Cuentas"],
-        // }),
+        createCuenta: builder.mutation<any, Partial<any>>({
+            query: (newCuenta) => ({
+                url: "/cuentas",
+                method: "POST",
+                body: newCuenta,
+            }),
+            invalidatesTags: ["Cuentas"],
+        }),
     }),
+    overrideExisting: false,
 });
 
 export const {
     useGetCuentasQuery,
-    // useCreateCuentaMutation,
+    useCreateCuentaMutation,
 } = cuentasApi;

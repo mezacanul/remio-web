@@ -2,7 +2,7 @@
 import Button from "@/src/components/Common/Button";
 import DropdownMenu from "@/src/components/Common/DropdownMenu";
 import DropdownMenuItem from "@/src/components/Common/DropdownMenuItem";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/src/store/store";
@@ -15,7 +15,10 @@ import { TbFileInvoice, TbInvoice } from "react-icons/tb";
 import { LiaFileInvoiceDollarSolid } from "react-icons/lia";
 import { formatDate } from "@/src/utils";
 import { ImSpoonKnife } from "react-icons/im";
-import { setCurrentCuentaID } from "@/src/features/currentCuentaID";
+import {
+    resetCurrentCuentaID,
+    setCurrentCuentaID,
+} from "@/src/features/currentCuentaID";
 
 type CuentaListItem = Pick<
     Cuenta,
@@ -25,14 +28,20 @@ type CuentaListItem = Pick<
 };
 
 export default function Home() {
+    const dispatch = useDispatch();
     const userId = useSelector(
         (state: RootState) => state.user._id
     );
     const {
         data: cuentasData,
         isLoading,
+        isFetching,
         isError,
     } = useGetCuentasQuery(userId);
+
+    useEffect(() => {
+        dispatch(resetCurrentCuentaID());
+    }, []);
 
     const cuentas = useMemo(() => {
         if (cuentasData) {
@@ -46,6 +55,14 @@ export default function Home() {
         return null;
     }, [cuentasData]);
 
+    if (isLoading || isFetching) {
+        return (
+            <div className="h-[40%] flex justify-center items-center">
+                <LoadingSpinner size="lg" />
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col rounded-md h-[60%]">
             <div className="flex justify-between items-center">
@@ -54,12 +71,6 @@ export default function Home() {
                 </h1>
                 <AddNewDropdown />
             </div>
-
-            {isLoading && (
-                <div className="h-[40%] flex justify-center items-center">
-                    <LoadingSpinner size="lg" />
-                </div>
-            )}
 
             {cuentas && cuentas.length === 0 && (
                 <div className="h-full flex justify-center items-center">

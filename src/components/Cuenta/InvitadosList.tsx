@@ -14,13 +14,13 @@ type MappedInvitado = {
 
 interface InvitadosListProps {
     invitados: MappedInvitado[];
-    // onAddInvitado: () => void;
+    onAddInvitado: () => void;
 }
 
 export default function InvitadosList({
     invitados,
-}: // onAddInvitado,
-InvitadosListProps) {
+    onAddInvitado,
+}: InvitadosListProps) {
     const navigation = useRouter();
     return (
         <div>
@@ -28,14 +28,14 @@ InvitadosListProps) {
                 <p className="text-xl font-bold">
                     {"Invitados"}
                 </p>
-                {/* <Button
+                <Button
                     title="+"
                     w="10"
                     py="1"
                     onClick={onAddInvitado}
-                /> */}
+                />
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
                 {invitados &&
                     invitados.map((invitado) => (
                         <InvitadoItem

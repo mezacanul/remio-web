@@ -3,9 +3,8 @@ import userReducer from "@/src/features/userSlice";
 import sidemenuReducer from "@/src/features/sidemenuSlice";
 import cuentasReducer from "@/src/features/cuentasSlice";
 import currentCuentaReducer from "@/src/features/currentCuentaSlice";
-import { cuentasApi } from "./api/cuentasApi";
-import { currentCuentaApi } from "./api/currentCuentaApi";
 import currentCuentaIDReducer from "@/src/features/currentCuentaID";
+import { baseApi } from "./api/baseApi";
 
 const store = configureStore({
     reducer: {
@@ -14,15 +13,10 @@ const store = configureStore({
         cuentas: cuentasReducer,
         currentCuenta: currentCuentaReducer,
         currentCuentaID: currentCuentaIDReducer,
-        [cuentasApi.reducerPath]: cuentasApi.reducer,
-        [currentCuentaApi.reducerPath]:
-            currentCuentaApi.reducer,
+        [baseApi.reducerPath]: baseApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(
-            cuentasApi.middleware,
-            currentCuentaApi.middleware
-        ),
+        getDefaultMiddleware().concat(baseApi.middleware),
 });
 
 export default store;

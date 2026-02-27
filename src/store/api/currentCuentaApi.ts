@@ -1,32 +1,40 @@
-import {
-    createApi,
-    fetchBaseQuery,
-} from "@reduxjs/toolkit/query/react";
+import { baseApi } from "./baseApi";
 
-export const currentCuentaApi = createApi({
-    reducerPath: "currentCuentaApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
-    tagTypes: ["CurrentCuenta"],
+interface CuentaNamePayload {
+    id: string;
+    nombre: string;
+}
+
+export const currentCuentaApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // GET: Provides the tag
         getCurrentCuenta: builder.query<any, string>({
             query: (id) => `/cuentas/${id}`,
             providesTags: ["CurrentCuenta"],
         }),
-
-        // // POST: Invalidates the tag
-        // createCuenta: builder.mutation<any, Partial<any>>({
-        //     query: (newCuenta) => ({
-        //         url: "/cuentas",
-        //         method: "POST",
-        //         body: newCuenta,
-        //     }),
-        //     invalidatesTags: ["Cuentas"],
-        // }),
+        updateCuentaName: builder.mutation<
+            any,
+            CuentaNamePayload
+        >({
+            query: ({ id, nombre }) => ({
+                url: `/cuentas/${id}`,
+                method: "PATCH",
+                body: { nombre },
+            }),
+            invalidatesTags: ["Cuentas", "CurrentCuenta"],
+        }),
+        deleteCuenta: builder.mutation<any, string>({
+            query: (id) => ({
+                url: `/cuentas/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Cuentas"],
+        }),
     }),
+    overrideExisting: false,
 });
 
 export const {
     useGetCurrentCuentaQuery,
-    // useCreateCuentaMutation,
+    useUpdateCuentaNameMutation,
+    useDeleteCuentaMutation,
 } = currentCuentaApi;
