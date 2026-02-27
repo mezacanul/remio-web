@@ -18,6 +18,7 @@ import Summary from "@/src/components/Cuenta/Summary";
 import NameAndActions from "@/src/components/Cuenta/NameAndActions";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentCuentaID } from "@/src/features/currentCuentaID";
+import { toast } from "react-toastify";
 
 export default function CuentaPage() {
     const userId = useSelector(
@@ -45,6 +46,10 @@ export default function CuentaPage() {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        console.log("currentCuentaData", currentCuentaData);
+    }, [currentCuentaData]);
+
+    useEffect(() => {
         if (currentCuentaData) {
             setNombre(currentCuentaData.nombre);
             console.log(
@@ -54,37 +59,9 @@ export default function CuentaPage() {
         }
     }, [currentCuentaData]);
 
-    const invitadosMapped = useMemo(() => {
-        if (currentCuentaData?.invitados.length > 0) {
-            console.log(
-                "currentCuentaData?.invitados",
-                currentCuentaData?.invitados
-            );
-
-            const { invitados } = currentCuentaData;
-            let invitadosWithTotal = [];
-            invitadosWithTotal = invitados.map(
-                (invitado: any) => {
-                    return {
-                        ...invitado,
-                        total: getInvitadoTotal(
-                            invitado.consumo
-                        ),
-                    };
-                }
-            );
-            console.log(
-                "invitadosWithTotal",
-                invitadosWithTotal
-            );
-            return invitadosWithTotal;
-        }
-        return [];
-    }, [currentCuentaData]);
-
     const totalCalculado = useMemo(() => {
-        if (invitadosMapped) {
-            return invitadosMapped.reduce(
+        if (currentCuentaData?.invitados.length > 0) {
+            return currentCuentaData.invitados.reduce(
                 (acc: number, invitado: any) => {
                     return acc + invitado.total;
                 },
@@ -92,7 +69,7 @@ export default function CuentaPage() {
             );
         }
         return 0;
-    }, [invitadosMapped]);
+    }, [currentCuentaData]);
 
     async function handleSaveAndNavigate(
         navigate: boolean = false,
@@ -108,20 +85,23 @@ export default function CuentaPage() {
                 });
             }
         } else {
-            if (newNombre != "") {
+            if (newNombre == "") {
+                if (route == "/invitado") {
+                    toast.error(
+                        "Agregar un nombre a la cuenta"
+                    );
+                    return;
+                }
+            } else {
                 console.log("creating");
                 const result = await createCuenta({
                     nombre: nombre,
-                    invitados: [],
-                    sharedConsumos: [],
+                    // invitados: [],
+                    // sharedConsumos: [],
                     userId: userId,
                 }).unwrap();
-                if (route == "/invitado") {
-                    console.log("result", result);
-                    dispatch(
-                        setCurrentCuentaID(result._id)
-                    );
-                }
+                console.log("result", result);
+                dispatch(setCurrentCuentaID(result._id));
             }
         }
         if (navigate && route) {
@@ -133,6 +113,13 @@ export default function CuentaPage() {
         deleteCuenta(currentCuentaData?._id as string);
         navigation.push("/");
     }
+
+    const isEmptyCuenta = useMemo(() => {
+        return (
+            !currentCuentaData ||
+            currentCuentaData.invitados.length === 0
+        );
+    }, [currentCuentaData]);
 
     if (isLoading || isFetching)
         return (
@@ -162,7 +149,7 @@ export default function CuentaPage() {
             />
 
             <div className="h-[38vh] overflow-y-auto mt-0 mb-4">
-                {invitadosMapped.length === 0 && (
+                {isEmptyCuenta && (
                     <div className="flex justify-center items-center h-full">
                         <div className="w-[60%]">
                             <Button
@@ -178,9 +165,12 @@ export default function CuentaPage() {
                     </div>
                 )}
 
-                {invitadosMapped.length > 0 && (
+                {currentCuentaData?.invitados.length >
+                    0 && (
                     <InvitadosList
-                        invitados={invitadosMapped}
+                        invitados={
+                            currentCuentaData?.invitados
+                        }
                         onAddInvitado={() =>
                             handleSaveAndNavigate(
                                 true,

@@ -6,6 +6,7 @@ import Button from "../Common/Button";
 import { useDispatch } from "react-redux";
 import { setCurrentInvitado } from "@/src/features/currentInvitado";
 import { Invitado } from "@/types/base";
+import { setCurrentInvitadoID } from "@/src/features/currentInvitadoID";
 
 interface InvitadoWithTotal extends Invitado {
     // id: string;
@@ -26,7 +27,8 @@ export default function InvitadosList({
     const dispatch = useDispatch();
 
     function handleClick(invitado: InvitadoWithTotal) {
-        dispatch(setCurrentInvitado(invitado));
+        // dispatch(setCurrentInvitado(invitado));
+        dispatch(setCurrentInvitadoID(invitado._id));
         navigation.push(`/invitado`);
     }
 

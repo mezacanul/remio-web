@@ -2,17 +2,21 @@ import { baseApi } from "./baseApi";
 
 export const invitadosApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // getCuentas: builder.query<any[], string>({
-        //     query: (userId) => `/cuentas?userId=${userId}`,
-        //     providesTags: ["Cuentas"],
-        // }),
+        getInvitado: builder.query<any, Partial<any>>({
+            query: ({ id, cuenta }) =>
+                `/invitados/${id}?cuenta=${cuenta}`,
+            providesTags: ["CurrentInvitado"],
+        }),
         pushInvitado: builder.mutation<any, Partial<any>>({
             query: (newInvitado) => ({
                 url: "/invitados",
                 method: "PATCH",
                 body: newInvitado,
             }),
-            invalidatesTags: ["CurrentCuenta"],
+            invalidatesTags: [
+                "CurrentCuenta",
+                "CurrentInvitado",
+            ],
         }),
         updateInvitado: builder.mutation<any, Partial<any>>(
             {
@@ -21,7 +25,10 @@ export const invitadosApi = baseApi.injectEndpoints({
                     method: "PUT",
                     body: updatedInvitado,
                 }),
-                invalidatesTags: ["CurrentCuenta"],
+                invalidatesTags: [
+                    "CurrentCuenta",
+                    "CurrentInvitado",
+                ],
             }
         ),
     }),
@@ -29,6 +36,7 @@ export const invitadosApi = baseApi.injectEndpoints({
 });
 
 export const {
+    useGetInvitadoQuery,
     usePushInvitadoMutation,
     useUpdateInvitadoMutation,
 } = invitadosApi;

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/backend/lib/db";
 import { CuentaModel } from "@/backend/lib/models/Cuenta";
 import { CuentaJSON } from "@/types/frontend/json";
+import { Invitado } from "@/types/base";
 
 export async function GET(
     request: Request,
@@ -11,8 +12,17 @@ export async function GET(
     await dbConnect();
     const cuenta = await CuentaModel.findOne({
         _id: id,
-    });
-    return NextResponse.json(cuenta, {
+    }).select("nombre invitados createdAt");
+
+    const cuentaWithTotals = {
+        ...cuenta.toObject(),
+        invitados: cuenta.invitados.map((inv: any) => ({
+            _id: inv._id, // Needed for your Next.js [id] links
+            nombre: inv.nombre,
+            total: inv.total, // Computed on server via Virtual
+        })),
+    };
+    return NextResponse.json(cuentaWithTotals, {
         status: 200,
     });
 }

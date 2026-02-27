@@ -4,6 +4,7 @@ import Providers from "@/src/components/Providers";
 import AuthMiddleware from "@/src/components/AuthMiddleware";
 import SideMenu from "@/src/components/SideMenu";
 import { ReduxProvider } from "@/src/store/provider";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
     title: "Remiu App",
@@ -23,6 +24,7 @@ export default function RootLayout({
                 {/* <Providers> */}
                 <ReduxProvider>
                     <AuthMiddleware>
+                        <ToastContainer />
                         <main className="h-full">
                             {children}
                         </main>

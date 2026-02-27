@@ -8,4 +8,21 @@ const InvitadoSchema = new Schema<Invitado>({
     consumo: [ConsumoSchema], // Nested array of consumos
 });
 
+InvitadoSchema.virtual("total").get(function (this: any) {
+    if (this.consumo.length === 0) return 0;
+
+    return this.consumo.reduce(
+        (acc: number, curr: any) =>
+            acc + curr.precio * curr.cantidad,
+        0
+    );
+});
+
+InvitadoSchema.set("toJSON", {
+    virtuals: true,
+});
+InvitadoSchema.set("toObject", {
+    virtuals: true,
+});
+
 export { InvitadoSchema };

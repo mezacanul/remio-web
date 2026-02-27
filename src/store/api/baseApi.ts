@@ -6,6 +6,10 @@ import {
 export const baseApi = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
-    tagTypes: ["Cuentas", "CurrentCuenta"], // Register all tags here
+    tagTypes: [
+        "Cuentas",
+        "CurrentCuenta",
+        "CurrentInvitado",
+    ], // Register all tags here
     endpoints: () => ({}), // Start empty
 });

@@ -7,6 +7,7 @@ import Button from "../Common/Button";
 import ButtonSmall from "./ButtonSmall";
 import { useDispatch } from "react-redux";
 import { addConsumo } from "@/src/features/currentInvitado";
+import { ToastContainer, toast } from "react-toastify";
 
 interface ConsumoWithID extends Consumo {
     _id?: string;
@@ -66,25 +67,27 @@ export default function ConsumoForm({
         });
     };
 
-    function handleSaveConsumo() {
-        if (!currentConsumo) {
-            const newConsumo = {
-                ...form,
-                precio: Number(form.precio),
-            };
-            dispatch(addConsumo(newConsumo));
-        }
-        //     const newConsumo = createNewConsumo(
-        //         form.nombre,
-        //         form.precio,
-        //         form.cantidad
-        //     );
-        //     onAddConsumo(newConsumo);
-        // } else {
-        //     onUpdateConsumo(form);
-        // }
-        handleClose();
-    }
+    // function handleSaveConsumo() {
+    //     toast.error("Consumo agregado correctamente");
+    //     return;
+    //     if (!currentConsumo) {
+    //         const newConsumo = {
+    //             ...form,
+    //             precio: Number(form.precio),
+    //         };
+    //         dispatch(addConsumo(newConsumo));
+    //     }
+    //     //     const newConsumo = createNewConsumo(
+    //     //         form.nombre,
+    //     //         form.precio,
+    //     //         form.cantidad
+    //     //     );
+    //     //     onAddConsumo(newConsumo);
+    //     // } else {
+    //     //     onUpdateConsumo(form);
+    //     // }
+    //     handleClose();
+    // }
 
     // function onDeleteConsumo() {
     //     handleDeleteConsumo(currentConsumo as Consumo);
@@ -236,7 +239,12 @@ export default function ConsumoForm({
                     title="Guardar"
                     onClick={
                         // () => {}
-                        handleSaveConsumo
+                        // handleSaveConsumo
+                        () => {
+                            onAddConsumo(
+                                form as ConsumoWithID
+                            );
+                        }
                     }
                     disabled={
                         Number(form.precio) === 0 ||

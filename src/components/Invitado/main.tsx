@@ -26,6 +26,11 @@ import {
 } from "@/src/store/api/invitadosApi";
 import { Consumo } from "@/types/base";
 import { resetCurrentInvitado } from "@/src/features/currentInvitado";
+import { resetCurrentInvitadoID } from "@/src/features/currentInvitadoID";
+import { useGetInvitadoQuery } from "@/src/store/api/invitadosApi";
+import { skipToken } from "@reduxjs/toolkit/query";
+import LoadingSpinner from "../Common/LoadingSpinner";
+import { toast } from "react-toastify";
 
 export default function InvitadoMain() {
     const [nombre, setNombre] = useState("");
@@ -33,20 +38,76 @@ export default function InvitadoMain() {
     const currentCuentaID = useSelector(
         (state: RootState) => state.currentCuentaID.id
     );
-    const currentInvitado = useSelector(
-        (state: RootState) => state.currentInvitado
+    const currentInvitadoID = useSelector(
+        (state: RootState) => state.currentInvitadoID.id
     );
+    const {
+        data: currentInvitadoData,
+        isLoading,
+        isFetching,
+        error,
+    } = useGetInvitadoQuery({
+        id: currentInvitadoID,
+        cuenta: currentCuentaID,
+    });
+    // const currentInvitado = useSelector(
+    //     (state: RootState) => state.currentInvitado
+    // );
     const [createCuenta] = useCreateCuentaMutation();
     const [pushInvitado] = usePushInvitadoMutation();
     const [updateInvitado] = useUpdateInvitadoMutation();
 
     useEffect(() => {
-        if (currentInvitado) {
-            console.log("currentInvitado", currentInvitado);
-            setNombre(currentInvitado.nombre);
-            setConsumo(currentInvitado.consumo);
+        if (currentInvitadoData) {
+            console.log(
+                "currentInvitadoData",
+                currentInvitadoData
+            );
+            setNombre(currentInvitadoData.nombre);
+            setConsumo(currentInvitadoData.consumo);
         }
-    }, [currentInvitado]);
+    }, [currentInvitadoData]);
+
+    async function handleSaveAndNavigate(
+        navigate: boolean = false,
+        route: string | null = null
+    ) {
+        const trimmedNombre = nombre.trim();
+
+        // Validate: there is a name or consumo
+        if (trimmedNombre != "" || consumo.length > 0) {
+            // Validate: there is no current invitado (push)
+            if (!currentInvitadoID) {
+                console.log("pushing new invitado");
+
+                const response = await pushInvitado({
+                    nombre: trimmedNombre,
+                    consumo: consumo,
+                    cuentaID: currentCuentaID,
+                }).unwrap();
+                console.log("response", response);
+                console.log("pushing new invitado");
+            }
+            // Validate: there is a current invitado (update)
+            else if (currentInvitadoID) {
+                const payload = {
+                    cuentaID: currentCuentaID,
+                    invitadoID: currentInvitadoID,
+                    nombre: trimmedNombre,
+                    consumo: consumo,
+                };
+                const response = await updateInvitado(
+                    payload
+                ).unwrap();
+                console.log("response", response);
+                console.log("updating invitado");
+            }
+        }
+        if (navigate && route) {
+            navigation.push(route);
+            dispatch(resetCurrentInvitado());
+        }
+    }
 
     // ---------------------------------------------------
     // ---------------------------------------------------
@@ -69,52 +130,6 @@ export default function InvitadoMain() {
         useState<Consumo | null>(null);
 
     const mtClass = total > 0 ? "" : "mt-5";
-
-    async function handleSaveAndNavigate(
-        navigate: boolean = false,
-        route: string | null = null
-    ) {
-        const trimmedNombre = nombre.trim();
-
-        // Validate: there is a name or consumo
-        if (trimmedNombre != "" || consumo.length > 0) {
-            // Validate: there is a current cuenta
-            if (currentCuentaID) {
-                // Validate: there is no current invitado (push)
-                if (!currentInvitado._id) {
-                    console.log("pushing new invitado");
-
-                    const response = await pushInvitado({
-                        nombre: trimmedNombre,
-                        consumo: consumo,
-                        cuentaID: currentCuentaID,
-                    }).unwrap();
-                    console.log("response", response);
-                    console.log("pushing new invitado");
-                }
-                // Validate: there is a current invitado (update)
-                else if (currentInvitado._id) {
-                    const payload = {
-                        cuentaID: currentCuentaID,
-                        invitadoID: currentInvitado._id,
-                        nombre: trimmedNombre,
-                        consumo: consumo,
-                    };
-                    const response = await updateInvitado(
-                        payload
-                    ).unwrap();
-                    console.log("response", response);
-                    console.log("updating invitado");
-                }
-            }
-        } else {
-            console.log("nothing to save");
-        }
-        if (navigate && route) {
-            navigation.push(route);
-            dispatch(resetCurrentInvitado());
-        }
-    }
 
     // useEffect(() => {
     //     if (id) {
@@ -198,6 +213,23 @@ export default function InvitadoMain() {
     //     navigation.push("/cuenta");
     // }
 
+    function handleAddConsumo(form: any) {
+        setConsumo([...consumo, form]);
+        setIsFormOpen(false);
+    }
+
+    // useEffect(() => {
+    //     handleSaveAndNavigate(false);
+    // }, [consumo]);
+
+    if (isLoading || isFetching) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <LoadingSpinner />
+            </div>
+        );
+    }
+
     return (
         <div className="w-full">
             <Header
@@ -205,6 +237,7 @@ export default function InvitadoMain() {
                 onBack={() => {
                     // navigation.push("/cuenta");
                     handleSaveAndNavigate(true, "/cuenta");
+                    dispatch(resetCurrentInvitadoID());
                 }}
             />
             <div className="flex items-center gap-2 mt-2 w-full">
@@ -237,9 +270,15 @@ export default function InvitadoMain() {
                     <div className="flex justify-center">
                         <BotonAgregarConsumo
                             title="Agregar Consumo +"
-                            onClick={() =>
-                                setIsFormOpen(true)
-                            }
+                            onClick={() => {
+                                if (nombre == "") {
+                                    toast.error(
+                                        "Agregar un nombre al invitado"
+                                    );
+                                    return;
+                                }
+                                setIsFormOpen(true);
+                            }}
                         />
                     </div>
                 )}
@@ -247,7 +286,13 @@ export default function InvitadoMain() {
                     <ConsumoForm
                         onClose={() => setIsFormOpen(false)}
                         onAddConsumo={
-                            () => {}
+                            handleAddConsumo
+                            // () => {
+                            //     setConsumo([
+                            //         ...consumo,
+                            //         currentConsumo as Consumo,
+                            //     ]);
+                            // }
                             // onAddConsumo
                         }
                         onUpdateConsumo={
