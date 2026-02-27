@@ -1,16 +1,22 @@
-import { Consumo } from "@/src/types";
+// import { Consumo } from "@/src/types";
+import { Consumo } from "@/types/base";
 import Button from "../Common/Button";
 import ConsumoItem from "./ConsumoItem";
+import { useEffect } from "react";
+
+interface ConsumoWithID extends Consumo {
+    _id?: string;
+}
 
 type ConsumoListProps = {
-    consumos: Consumo[];
+    consumo: ConsumoWithID[];
     setIsFormOpen: (isFormOpen: boolean) => void;
-    setCurrentConsumo: (consumo: Consumo) => void;
+    setCurrentConsumo: (consumo: ConsumoWithID) => void;
     disableAddConsumo: boolean;
 };
 
 export default function ConsumoList({
-    consumos,
+    consumo,
     setIsFormOpen,
     setCurrentConsumo,
     disableAddConsumo,
@@ -19,6 +25,11 @@ export default function ConsumoList({
         setIsFormOpen(true);
         setCurrentConsumo(consumo);
     }
+
+    useEffect(() => {
+        // console.log(consumo);
+        
+    }, [consumo]);
     return (
         <div>
             <div className="flex justify-between items-center">
@@ -34,11 +45,14 @@ export default function ConsumoList({
                 />
             </div>
             <div className="flex flex-col gap-2 py-4">
-                {consumos.map((consumo) => (
+                {consumo.map((consumo, index) => (
                     <ConsumoItem
-                        key={consumo.id}
+                        key={index}
                         consumo={consumo}
-                        onClick={handleItemClick}
+                        onClick={
+                            () => {}
+                            // handleItemClick
+                        }
                     />
                 ))}
             </div>

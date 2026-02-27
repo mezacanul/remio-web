@@ -1,47 +1,23 @@
 "use client";
 import { skipToken } from "@reduxjs/toolkit/query";
 import Button from "@/src/components/Common/Button";
-import DropdownMenu from "@/src/components/Common/DropdownMenu";
-import DropdownMenuItem from "@/src/components/Common/DropdownMenuItem";
 import InvitadosList from "@/src/components/Cuenta/InvitadosList";
-import {
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
-import { FaEllipsisV } from "react-icons/fa";
-import { FaArrowLeft, FaShare } from "react-icons/fa6";
-import { MdOutlineIosShare } from "react-icons/md";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/src/components/Common/Header";
-import {
-    addCuenta,
-    deleteCuenta,
-    updateCuenta,
-} from "@/src/features/cuentasSlice";
-import { Cuenta, Invitado } from "@/src/types";
-import { useDispatch, useSelector } from "react-redux";
-import { format } from "date-fns";
-import { v4 as uuidv4 } from "uuid";
-import { RootState } from "@/src/store/store";
-import {
-    initializeCurrentCuenta,
-    resetCurrentCuenta,
-    setCurrentCuenta,
-} from "@/src/features/currentCuentaSlice";
-import {
-    createNewCuenta,
-    getInvitadoTotal,
-} from "@/src/utils";
-import { useGetCurrentCuentaQuery } from "@/src/store/api/currentCuentaApi";
-import LoadingSpinner from "@/src/components/Common/LoadingSpinner";
-import { InvitadoJSON } from "@/types/frontend/json";
-import { useCreateCuentaMutation } from "@/src/store/api/cuentasApi";
 import {
     useDeleteCuentaMutation,
     useUpdateCuentaNameMutation,
 } from "@/src/store/api/currentCuentaApi";
+import { RootState } from "@/src/store/store";
+import { getInvitadoTotal } from "@/src/utils";
+import { useGetCurrentCuentaQuery } from "@/src/store/api/currentCuentaApi";
+import LoadingSpinner from "@/src/components/Common/LoadingSpinner";
+import { useCreateCuentaMutation } from "@/src/store/api/cuentasApi";
+import Summary from "@/src/components/Cuenta/Summary";
+import NameAndActions from "@/src/components/Cuenta/NameAndActions";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentCuentaID } from "@/src/features/currentCuentaID";
 
 export default function CuentaPage() {
     const userId = useSelector(
@@ -54,6 +30,7 @@ export default function CuentaPage() {
     const {
         data: currentCuentaData,
         isLoading,
+        isFetching,
         isError,
     } = useGetCurrentCuentaQuery(
         currentCuentaID
@@ -65,6 +42,7 @@ export default function CuentaPage() {
     const [createCuenta] = useCreateCuentaMutation();
     const [deleteCuenta] = useDeleteCuentaMutation();
     const navigation = useRouter();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (currentCuentaData) {
@@ -84,8 +62,8 @@ export default function CuentaPage() {
             );
 
             const { invitados } = currentCuentaData;
-            let newInvitados = [];
-            newInvitados = invitados.map(
+            let invitadosWithTotal = [];
+            invitadosWithTotal = invitados.map(
                 (invitado: any) => {
                     return {
                         ...invitado,
@@ -95,8 +73,11 @@ export default function CuentaPage() {
                     };
                 }
             );
-            console.log("newInvitados", newInvitados);
-            return newInvitados;
+            console.log(
+                "invitadosWithTotal",
+                invitadosWithTotal
+            );
+            return invitadosWithTotal;
         }
         return [];
     }, [currentCuentaData]);
@@ -113,7 +94,7 @@ export default function CuentaPage() {
         return 0;
     }, [invitadosMapped]);
 
-    function handleSaveAndNavigate(
+    async function handleSaveAndNavigate(
         navigate: boolean = false,
         route: string | null = null
     ) {
@@ -129,12 +110,18 @@ export default function CuentaPage() {
         } else {
             if (newNombre != "") {
                 console.log("creating");
-                createCuenta({
+                const result = await createCuenta({
                     nombre: nombre,
                     invitados: [],
                     sharedConsumos: [],
                     userId: userId,
-                });
+                }).unwrap();
+                if (route == "/invitado") {
+                    console.log("result", result);
+                    dispatch(
+                        setCurrentCuentaID(result._id)
+                    );
+                }
             }
         }
         if (navigate && route) {
@@ -147,7 +134,7 @@ export default function CuentaPage() {
         navigation.push("/");
     }
 
-    if (isLoading)
+    if (isLoading || isFetching)
         return (
             <div className="flex justify-center items-center h-full">
                 <LoadingSpinner size="lg" />
@@ -204,96 +191,6 @@ export default function CuentaPage() {
                 )}
             </div>
             <Summary totalCalculado={totalCalculado} />
-        </div>
-    );
-}
-
-type NameAndActionsProps = {
-    nameRef?: React.RefObject<HTMLInputElement | null>;
-    nombre: string;
-    setNombre: (nombre: string) => void;
-    createdAt: string | undefined;
-    onDeleteCuenta: () => void;
-};
-
-function NameAndActions({
-    nameRef,
-    nombre,
-    setNombre,
-    createdAt,
-    onDeleteCuenta,
-}: NameAndActionsProps) {
-    const [isOpen, setIsOpen] = useState(false);
-
-    return (
-        <div className="flex justify-between items-start gap-1">
-            <div className="w-full">
-                <input
-                    type="text"
-                    placeholder="(sin nombre)"
-                    className="w-full text-xl p-2 pb-1 pl-0 border-b border-gray-400 dark:bg-gray-800 text-black dark:text-white placeholder:text-gray-500"
-                    // autoFocus
-                    // onBlur={onSave}
-                    ref={nameRef}
-                    value={nombre}
-                    onChange={(e) =>
-                        setNombre(e.target.value)
-                    }
-                />
-                <p className="text-sm text-gray-500 mt-2">
-                    {createdAt || "--"}
-                </p>
-            </div>
-
-            <DropdownMenu
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                // title="Acciones"
-                trigger={
-                    <FaEllipsisV
-                        size={24}
-                        style={{
-                            marginRight: "-8px",
-                            marginTop: "14px",
-                        }}
-                    />
-                }
-            >
-                <DropdownMenuItem
-                    title="Codigo de invitación"
-                    onClick={() => {}}
-                />
-                <DropdownMenuItem
-                    title="Eliminar"
-                    onClick={onDeleteCuenta}
-                />
-            </DropdownMenu>
-        </div>
-    );
-}
-
-function Summary({
-    totalCalculado,
-}: {
-    totalCalculado: number;
-}) {
-    return (
-        <div className="flex justify-between items-end gap-3 w-full border-t border-gray-400 pt-2">
-            <div className="w-[4rem]">
-                <Button
-                    onClick={() => {}}
-                    icon={<MdOutlineIosShare size={20} />}
-                    py="3"
-                />
-            </div>
-            <div className="flex flex-col gap-2 mt-2">
-                <div className="flex flex-col items-end justify-between items-center gap-1">
-                    <span className="font-bold">Total</span>
-                    <span className="font-bold text-2xl text-remiu-primary">
-                        {`$${totalCalculado.toFixed(2)}`}
-                    </span>
-                </div>
-            </div>
         </div>
     );
 }

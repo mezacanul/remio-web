@@ -1,12 +1,7 @@
-import {
-    Consumo,
-    Cuenta,
-    Invitado,
-    // User
-} from "../types";
+import { Cuenta, Invitado } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { format } from "date-fns";
-import { User } from "@/types/base";
+import { Consumo, User } from "@/types/base";
 
 function getById(array: any[], id: string) {
     return array.find((item) => item.id === id);
@@ -60,47 +55,9 @@ function getCuentasFromLocalStorage(): Cuenta[] | null {
     return cuentas ? JSON.parse(cuentas) : null;
 }
 
-function createNewInvitado(
-    nombre: string,
-    consumos: Consumo[],
-    invitadosCount: number
-): Invitado {
-    const id = uuidv4();
-    const hasName = nombre.trim() != "";
-    return {
-        id: id,
-        nombre: hasName
-            ? nombre
-            : `Invitado${
-                  invitadosCount > 0
-                      ? ` (${invitadosCount})`
-                      : ""
-              }`,
-        consumos: consumos,
-        joined: false,
-    };
-}
-
-function createNewConsumo(
-    nombre: string,
-    precio: string,
-    cantidad: number
-): Consumo {
-    const id = uuidv4();
-    return {
-        id: id,
-        nombre: nombre,
-        precio: precio,
-        cantidad: cantidad,
-    };
-}
-
 function getInvitadoTotal(consumo: Consumo[]): number {
     return consumo.reduce((acc, consumo) => {
-        return (
-            acc +
-            parseFloat(consumo.precio) * consumo.cantidad
-        );
+        return acc + consumo.precio * consumo.cantidad;
     }, 0);
 }
 
@@ -109,8 +66,6 @@ export {
     createNewCuenta,
     saveCuentasToLocalStorage,
     getCuentasFromLocalStorage,
-    createNewInvitado,
-    createNewConsumo,
     getInvitadoTotal,
     saveUserToLocalStorage,
     getUserFromLocalStorage,

@@ -2,18 +2,22 @@ import {
     createSlice,
     PayloadAction,
 } from "@reduxjs/toolkit";
-// import { Cuenta, Invitado } from "@/src/types";
-// import { v4 as uuidv4 } from "uuid";
-// import { format } from "date-fns";
 
-const initialState: { id: string | null } = {
+interface CurrentCuentaID {
+    id: string | null;
+}
+
+const initialState: CurrentCuentaID = {
     id: null,
 };
 const currentCuentaIDSlice = createSlice({
     name: "currentCuentaID",
     initialState,
     reducers: {
-        setCurrentCuentaID: (state, action) => {
+        setCurrentCuentaID: (
+            state: CurrentCuentaID,
+            action: PayloadAction<string>
+        ) => {
             state.id = action.payload;
         },
         resetCurrentCuentaID: (state) => {

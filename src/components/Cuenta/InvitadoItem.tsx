@@ -5,8 +5,6 @@ import {
 
 interface InvitadoItemProps {
     nombre: string;
-    // monto: string;
-    joined: boolean;
     onClick?: () => void;
     total: number;
 }
@@ -14,7 +12,6 @@ interface InvitadoItemProps {
 export default function InvitadoItem({
     nombre,
     // monto,
-    joined,
     onClick,
     total,
 }: InvitadoItemProps) {
@@ -26,12 +23,7 @@ export default function InvitadoItem({
             <div className="flex items-center gap-2.5">
                 {/* <MdArrowForwardIos /> */}
                 <span className="">
-                    {joined ? (
-                        <BsPersonCircle size={22} />
-                    ) : (
-                        <BsPersonCircle size={22} />
-                        // <BsFillPersonFill size={22} />
-                    )}
+                    <BsPersonCircle size={22} />
                 </span>
                 <div className="flex items-end gap-2 h-full">
                     <span className="text-lg">

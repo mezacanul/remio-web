@@ -1,19 +1,20 @@
 import InvitadoItem from "./InvitadoItem";
 import { useRouter } from "next/navigation";
-import { Invitado } from "@/src/types";
+// import { Invitado } from "@/src/types";
 import { useState } from "react";
 import Button from "../Common/Button";
+import { useDispatch } from "react-redux";
+import { setCurrentInvitado } from "@/src/features/currentInvitado";
+import { Invitado } from "@/types/base";
 
-type MappedInvitado = {
+interface InvitadoWithTotal extends Invitado {
     // id: string;
     _id: string;
-    nombre: string;
-    joined?: boolean;
     total: number;
-};
+}
 
 interface InvitadosListProps {
-    invitados: MappedInvitado[];
+    invitados: InvitadoWithTotal[];
     onAddInvitado: () => void;
 }
 
@@ -22,6 +23,13 @@ export default function InvitadosList({
     onAddInvitado,
 }: InvitadosListProps) {
     const navigation = useRouter();
+    const dispatch = useDispatch();
+
+    function handleClick(invitado: InvitadoWithTotal) {
+        dispatch(setCurrentInvitado(invitado));
+        navigation.push(`/invitado`);
+    }
+
     return (
         <div>
             <div className="flex justify-between items-end mb-4">
@@ -43,14 +51,9 @@ export default function InvitadosList({
                             key={invitado._id}
                             nombre={invitado.nombre}
                             // monto={invitado.monto}
-                            joined={
-                                invitado.joined ?? false
-                            }
                             total={invitado.total}
                             onClick={() => {
-                                navigation.push(
-                                    `/invitado?id=${invitado._id}`
-                                );
+                                handleClick(invitado);
                             }}
                         />
                     ))}
@@ -58,24 +61,3 @@ export default function InvitadosList({
         </div>
     );
 }
-
-const invitadosData = [
-    {
-        id: "1",
-        nombre: "Jose Meza",
-        consumos: [],
-        joined: false,
-    },
-    {
-        id: "2",
-        nombre: "Juan Perez",
-        consumos: [],
-        joined: true,
-    },
-    {
-        id: "3",
-        nombre: "Maria Lopez",
-        joined: false,
-        consumos: [],
-    },
-];

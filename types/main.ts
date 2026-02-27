@@ -7,4 +7,12 @@ type CuentaListItem = Pick<
     _id: string;
 };
 
-export type { CuentaListItem };
+type NameAndActionsProps = {
+    nameRef?: React.RefObject<HTMLInputElement | null>;
+    nombre: string;
+    setNombre: (nombre: string) => void;
+    createdAt: string | undefined;
+    onDeleteCuenta: () => void;
+};
+
+export type { CuentaListItem, NameAndActionsProps };

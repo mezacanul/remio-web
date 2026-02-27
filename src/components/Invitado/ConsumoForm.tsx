@@ -1,17 +1,32 @@
-import { Consumo } from "@/src/types";
+// import { Consumo } from "@/src/types";
+import { Consumo } from "@/types/base";
 import { useEffect, useMemo, useState } from "react";
-import { createNewConsumo } from "@/src/utils";
+// import { createNewConsumo } from "@/src/utils";
 import { IoClose } from "react-icons/io5";
 import Button from "../Common/Button";
 import ButtonSmall from "./ButtonSmall";
+import { useDispatch } from "react-redux";
+import { addConsumo } from "@/src/features/currentInvitado";
+
+interface ConsumoWithID extends Consumo {
+    _id?: string;
+}
+
+const defaultForm = {
+    nombre: "",
+    precio: "",
+    cantidad: 1,
+};
 
 type ConsumoFormProps = {
     onClose: () => void;
-    onAddConsumo: (consumo: Consumo) => void;
-    onUpdateConsumo: (consumo: Consumo) => void;
-    currentConsumo: Consumo | null;
-    setCurrentConsumo: (consumo: Consumo | null) => void;
-    handleDeleteConsumo: (consumo: Consumo) => void;
+    onAddConsumo: (consumo: ConsumoWithID) => void;
+    onUpdateConsumo: (consumo: ConsumoWithID) => void;
+    currentConsumo: ConsumoWithID | null;
+    setCurrentConsumo: (
+        consumo: ConsumoWithID | null
+    ) => void;
+    handleDeleteConsumo: (consumo: ConsumoWithID) => void;
 };
 
 export default function ConsumoForm({
@@ -22,11 +37,7 @@ export default function ConsumoForm({
     setCurrentConsumo,
     handleDeleteConsumo,
 }: ConsumoFormProps) {
-    const defaultForm = {
-        nombre: "",
-        precio: "",
-        cantidad: 1,
-    };
+    const dispatch = useDispatch();
     const [form, setForm] = useState(
         currentConsumo ? currentConsumo : defaultForm
     );
@@ -57,40 +68,71 @@ export default function ConsumoForm({
 
     function handleSaveConsumo() {
         if (!currentConsumo) {
-            const newConsumo = createNewConsumo(
-                form.nombre,
-                form.precio,
-                form.cantidad
-            );
-            onAddConsumo(newConsumo);
-        } else {
-            onUpdateConsumo(form);
+            const newConsumo = {
+                ...form,
+                precio: Number(form.precio),
+            };
+            dispatch(addConsumo(newConsumo));
         }
+        //     const newConsumo = createNewConsumo(
+        //         form.nombre,
+        //         form.precio,
+        //         form.cantidad
+        //     );
+        //     onAddConsumo(newConsumo);
+        // } else {
+        //     onUpdateConsumo(form);
+        // }
         handleClose();
     }
 
-    function onDeleteConsumo() {
-        handleDeleteConsumo(currentConsumo as Consumo);
-        handleClose();
-    }
+    // function onDeleteConsumo() {
+    //     handleDeleteConsumo(currentConsumo as Consumo);
+    //     handleClose();
+    // }
 
     const handlePrecioChange = (
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
         const newValue = e.target.value;
-        const processedValue = newValue.trim();
-        if (
-            Number(processedValue) ||
-            processedValue === ""
-        ) {
-            setForm({
-                ...form,
-                precio: processedValue,
-            });
-        } else {
+        if (form.precio === "" && newValue === "0") {
             return;
         }
+        if (newValue === "") {
+            setForm({
+                ...form,
+                precio: "",
+            });
+            return;
+        }
+        const isNumber = !isNaN(Number(newValue));
+        const isPositive = Number(newValue) > 0;
+        // const isEmpty = newValue.trim() === "";
+        if (isNumber && isPositive) {
+            setForm({
+                ...form,
+                precio: Number(newValue),
+            });
+        }
     };
+
+    // const handlePrecioChange = (
+    //     e: React.ChangeEvent<HTMLInputElement>
+    // ) => {
+    //     const newValue = e.target.value;
+    //     const processedValue = newValue.trim();
+    //     if (
+    //         Number(processedValue) ||
+    //         processedValue === ""
+    //     ) {
+    //         setForm({
+    //             ...form,
+    //             precio: processedValue,
+    //         });
+    //     } else {
+    //         return;
+    //     }
+    // };
 
     const handleClose = () => {
         onClose();
@@ -132,11 +174,12 @@ export default function ConsumoForm({
                     </span>
                     <input
                         type="number"
-                        placeholder="0"
+                        placeholder="--"
                         className={`${classes.input} w-full text-xl`}
                         value={form.precio}
-                        onChange={(e) =>
-                            handlePrecioChange(e)
+                        onChange={
+                            // () => {}
+                            (e) => handlePrecioChange(e)
                         }
                     />
                 </div>
@@ -179,7 +222,10 @@ export default function ConsumoForm({
                     <Button
                         title="Eliminar"
                         bgColor="bg-gray-500"
-                        onClick={onDeleteConsumo}
+                        onClick={
+                            () => {}
+                            // onDeleteConsumo
+                        }
                         disabled={
                             Number(form.precio) === 0 ||
                             form.nombre.trim() === ""
@@ -188,7 +234,10 @@ export default function ConsumoForm({
                 )}
                 <Button
                     title="Guardar"
-                    onClick={handleSaveConsumo}
+                    onClick={
+                        // () => {}
+                        handleSaveConsumo
+                    }
                     disabled={
                         Number(form.precio) === 0 ||
                         form.nombre.trim() === ""

@@ -1,4 +1,5 @@
-import { Consumo } from "@/src/types";
+// import { Consumo } from "@/src/types";
+import { Consumo } from "@/types/base";
 import { useMemo } from "react";
 import { FaChevronRight } from "react-icons/fa";
 
@@ -10,9 +11,7 @@ export default function ConsumoItem({
     onClick: (consumo: Consumo) => void;
 }) {
     const total = useMemo(() => {
-        return (
-            parseFloat(consumo.precio) * consumo.cantidad
-        );
+        return consumo.precio * consumo.cantidad;
     }, [consumo]);
 
     return (
@@ -22,7 +21,7 @@ export default function ConsumoItem({
                 console.log(consumo);
                 onClick(consumo);
             }}
-        >   
+        >
             <div className="flex items-center gap-1">
                 <FaChevronRight />
                 <p className="text-lg">{consumo.nombre}</p>
