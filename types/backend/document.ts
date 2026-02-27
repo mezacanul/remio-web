@@ -19,14 +19,16 @@ interface ConsumoDocument
     extends Consumo,
         Document,
         Omit<DocumentProps, "_id"> {}
-interface UserDocument
-    extends User,
-        Document,
-        Omit<DocumentProps, "_id"> {}
+
+// interface UserDocument
+//     extends Omit<User, "_id">,
+//         User,
+//         Document,
+//         Omit<DocumentProps, "_id"> {}
 
 export type {
     ConsumoDocument,
     InvitadoDocument,
     CuentaDocument,
-    UserDocument,
+    // UserDocument,
 };
