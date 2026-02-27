@@ -10,7 +10,7 @@ export const invitadosApi = baseApi.injectEndpoints({
         pushInvitado: builder.mutation<any, Partial<any>>({
             query: (newInvitado) => ({
                 url: "/invitados",
-                method: "PATCH",
+                method: "POST",
                 body: newInvitado,
             }),
             invalidatesTags: [
@@ -20,10 +20,10 @@ export const invitadosApi = baseApi.injectEndpoints({
         }),
         updateInvitado: builder.mutation<any, Partial<any>>(
             {
-                query: (updatedInvitado) => ({
-                    url: "/invitados",
-                    method: "PUT",
-                    body: updatedInvitado,
+                query: (payload) => ({
+                    url: `/invitados/${payload.invitadoID}?cuenta=${payload.cuentaID}`,
+                    method: "PATCH",
+                    body: payload,
                 }),
                 invalidatesTags: [
                     "CurrentCuenta",

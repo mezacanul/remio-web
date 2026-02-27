@@ -1,12 +1,14 @@
 import { CuentaModel } from "@/backend/lib/models/Cuenta";
+import dbConnect from "@/backend/lib/db";
 import { Invitado } from "@/types/base";
 import { NextResponse } from "next/server";
 
-export async function PATCH(request: Request) {
+export async function POST(request: Request) {
     const body: Invitado & {
         cuentaID: string;
     } = await request.json();
     const { cuentaID, nombre, consumo } = body;
+    await dbConnect();
 
     const cuenta = await CuentaModel.findById(cuentaID);
     cuenta.invitados.push({
@@ -21,24 +23,4 @@ export async function PATCH(request: Request) {
         cuenta.invitados[cuenta.invitados.length - 1];
 
     return NextResponse.json(nuevoInvitado);
-}
-
-export async function PUT(request: Request) {
-    const body: Invitado & {
-        cuentaID: string;
-        invitadoID: string;
-    } = await request.json();
-
-    const { cuentaID, invitadoID, nombre, consumo } = body;
-
-    const cuenta = await CuentaModel.findById(cuentaID);
-    const invitado = cuenta.invitados.id(invitadoID); // Mongoose helper to find subdoc by ID
-
-    if (invitado) {
-        invitado.nombre = nombre;
-        invitado.consumo = consumo; // Mongoose will handle the ID generation for new items here
-        await cuenta.save();
-    }
-
-    return NextResponse.json(invitado);
 }
