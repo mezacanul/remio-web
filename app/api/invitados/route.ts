@@ -8,24 +8,19 @@ export async function PATCH(request: Request) {
     } = await request.json();
     const { cuentaID, nombre, consumo } = body;
 
-    const nombreInvitado =
-        nombre == "" ? "Invitado" : nombre;
+    const cuenta = await CuentaModel.findById(cuentaID);
+    cuenta.invitados.push({
+        nombre: nombre,
+        consumo,
+    });
 
-    const updatedCuenta =
-        await CuentaModel.findByIdAndUpdate(
-            cuentaID,
-            {
-                $push: {
-                    invitados: {
-                        nombre: nombreInvitado,
-                        consumo,
-                    },
-                },
-            },
-            { returnDocument: "after" }
-        );
+    await cuenta.save();
 
-    return NextResponse.json(updatedCuenta);
+    // Get the just-created invitado (last in array)
+    const nuevoInvitado =
+        cuenta.invitados[cuenta.invitados.length - 1];
+
+    return NextResponse.json(nuevoInvitado);
 }
 
 export async function PUT(request: Request) {

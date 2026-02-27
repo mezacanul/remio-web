@@ -26,7 +26,10 @@ import {
 } from "@/src/store/api/invitadosApi";
 import { Consumo } from "@/types/base";
 import { resetCurrentInvitado } from "@/src/features/currentInvitado";
-import { resetCurrentInvitadoID } from "@/src/features/currentInvitadoID";
+import {
+    resetCurrentInvitadoID,
+    setCurrentInvitadoID,
+} from "@/src/features/currentInvitadoID";
 import { useGetInvitadoQuery } from "@/src/store/api/invitadosApi";
 import { skipToken } from "@reduxjs/toolkit/query";
 import LoadingSpinner from "../Common/LoadingSpinner";
@@ -213,8 +216,32 @@ export default function InvitadoMain() {
     //     navigation.push("/cuenta");
     // }
 
-    function handleAddConsumo(form: any) {
-        setConsumo([...consumo, form]);
+    async function handleAddConsumo(form: any) {
+        // Validate: there is no current invitado
+        if (!currentInvitadoID && consumo.length == 0) {
+            // Push new invitado with consumo
+            console.log(
+                "pushing new invitado with consumo"
+            );
+            const response = await pushInvitado({
+                nombre: nombre,
+                consumo: [form],
+                cuentaID: currentCuentaID,
+            }).unwrap();
+            console.log("response", response);
+            dispatch(setCurrentInvitadoID(response._id));
+            setConsumo(response.consumo);
+        } else {
+            console.log("updating invitado with consumo");
+            const response = await updateInvitado({
+                cuentaID: currentCuentaID,
+                invitadoID: currentInvitadoID,
+                nombre: nombre,
+                consumo: [...consumo, form],
+            }).unwrap();
+            console.log("response", response);
+            setConsumo(response.consumo);
+        }
         setIsFormOpen(false);
     }
 
